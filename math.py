@@ -11,5 +11,3 @@ def euclildean_distance(city_coords,satellite_coords):
     Returns:
     float: The Euclidean distance between the city and the satellite.
 	"""
-
-city_coords = [0, 10, 20]

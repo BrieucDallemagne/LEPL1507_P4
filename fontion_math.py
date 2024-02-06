@@ -1,5 +1,6 @@
 import math
 import numpy as np
+
 def euclildean_distance(city_coords,satellite_coords):
 	"""
     Calculate the Euclidean distance between a city and a satellite in a 3D space.
@@ -14,4 +15,3 @@ def euclildean_distance(city_coords,satellite_coords):
 	delta = city_coords-satellite_coords
 	return math.sqrt(np.dot(delta,delta))
 
-def 

@@ -58,4 +58,6 @@ print(euclildean_distance(city_A,satellite_C))
 
 print(total_intensity(city_A, satellites_coords, 100))
 
+
 print(city_intensities(cities_coords, satellites_coords, 100))
+

@@ -76,31 +76,3 @@ def plot_covering(cities_coordinates, satellites_coordinates):
 
 
 
-"""Quelques exemples"""
-city_A = np.array([1, 2, 0]) # x, y, z
-city_B = np.array([4, 8, 0])
-city_C = np.array([5, 2, 0])
-city_D = np.array([8, 14, 0])
-city_E = np.array([10, 6, 0])
-satellite_A = np.array([2, 5, 12, 13]) # x, y, z, radius
-satellite_B = np.array([4, 3, 12, 13])
-satellite_C = np.array([11, 8, 12, 12.5])
-cities_coordinates = np.array([city_A, city_B, city_C, city_D, city_E])
-satellites_coordinates = np.array([satellite_A, satellite_B, satellite_C])
-
-"""print(euclildean_distance(city_A, satellite_A[:3]))
-print(euclildean_distance(city_A, satellite_B[:3]))
-print(euclildean_distance(city_A, satellite_C[:3]))
-
-print(total_intensity(city_A, satellites_coordinates[:, :3], 100))
-
-print(city_intensities(cities_coordinates, satellites_coordinates[:, :3], 100))
-"""
-
-print(is_covered(city_A, satellites_coordinates))
-print(is_covered(city_B, satellites_coordinates))
-print(is_covered(city_C, satellites_coordinates))
-print(is_covered(city_D, satellites_coordinates))
-print(is_covered(city_E, satellites_coordinates))
-
-plot_covering(cities_coordinates, satellites_coordinates)

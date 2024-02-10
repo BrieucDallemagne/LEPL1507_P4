@@ -3,26 +3,6 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 
 
-#début exemple
-# Définir les coordonnées des villes
-cities = np.array([[0, 0, 0], [0, 1, 0], [1, 0, 0], [1, 1, 0]])
-
-# Définir les coordonnées des satellites
-satellites = np.array([[0, 0, 1], [0, 1, 1], [1, 0, 1], [1, 1, 1]])
-
-# Définir les intensités des satellites
-intensities = np.array([1, 1, 1, 1])
-
-# Calculer les intensités des villes
-intensities_cities = np.zeros(cities.shape[0])
-
-for i, city in enumerate(cities):
-    for j, satellite in enumerate(satellites):
-        intensities_cities[i] += 1/np.sqrt(np.sum((city-satellite)**2))*intensities[j]
-
-#fin exemple
-
-
 def plot_plat(coord_cities, coord_satellites):
     """
     Plot the cities and the satellites on a 2D plane.
@@ -47,9 +27,11 @@ def plot_plat(coord_cities, coord_satellites):
     ax.plot_surface(X, Y, Z, color='g', alpha=0.5)
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
+    ax.set_zlabel('hauteur')
+    print('hauteur des satellites :', coord_satellites[0,2])
     plt.show()
 
-plot_plat(cities, satellites)
+
 
 
 

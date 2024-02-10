@@ -114,8 +114,6 @@ def plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size):
     plt.show()
 
 
-
-
 """city_A = np.array([1, 2, 0]) # x, y, z
 city_B = np.array([4, 8, 0])
 city_C = np.array([5, 2, 0])

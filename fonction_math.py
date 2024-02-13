@@ -273,4 +273,8 @@ def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, r
     coords_avec_colonne = np.c_[coords, np.full((len(coords), 1), radius)]
 
     return coords_avec_colonne
-    
+def distance_angulaire(lat1, lon1, lat2, lon2):
+    lat1 = np.radians(lat1);lon1 = np.radians(lon1);lat2 = np.radians(lat2);lon2 = np.radians(lon2)
+    a=np.array([np.cos(lat1)*np.cos(lon1),np.cos(lat1)*np.sin(lon1),np.sin(lat1)])
+    b=np.array([np.cos(lat2)*np.cos(lon2),np.cos(lat2)*np.sin(lon2),np.sin(lat2)])
+    return np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))

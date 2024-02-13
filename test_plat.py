@@ -91,10 +91,14 @@ plot_covering_2D(cities_coordinates, satellites_coordinates, 5)
 """
 def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10):
     for i in range(n_tests):
+        radius = random.uniform(0.1, 3.0)
+        radius = round(radius, 2)
+        print(radius)
+        n_cities = random.randint(1, 20)
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
         satellites_coordinates = fm.solve_2D(cities_coordinates, grid_size, radius)
         fm.plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size)
         plt.show()
 
 
-test_solve_2D_random(n_tests=30)
+test_solve_2D_random()

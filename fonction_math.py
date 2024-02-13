@@ -115,7 +115,7 @@ def plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size):
     plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x',
                 label='Satellites')
 
-    plt.title(f'Network coverage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites')
+    plt.title(f'Network coverage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites for a radius of {radius}')
     plt.xlabel('X coordinate')
     plt.ylabel('Y coordinate')
     plt.axis('equal')
@@ -179,7 +179,10 @@ def solve_2D(cities_coordinates, grid_size, radius):
     # Results
     print("Optimal satellite positions:")
     for city_coordinates in cities_coordinates:
-        solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
+        if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1):
+            solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
+        else:
+            solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
     print(solution_matrix)
     print("Optimal number of satellites: {}".format(problem.value))
 

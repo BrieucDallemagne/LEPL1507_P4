@@ -196,19 +196,55 @@ def is_in_radius(city, satellite,radius, grid_size):
         return True
     return False
 
-def solve_2D_ws(cities_coordinates, grid_size, radius, num_satellites):
+def solve_2D_v2(N_satellites, cities_coordinates, cities_weights, grid_size = 10, radius = 3):
+    num_cities = cities_coordinates.shape[0]
+
+    # Create a matrix for distances
+    distances_matrix = np.zeros((num_cities, (grid_size + 1)**2))
+
+    for i in range(num_cities):
+        city_x, city_y = cities_coordinates[i]
+        for j in range((grid_size + 1)**2): # (0,0) puis (0,1) puis (0,2) ...
+            x_pos = j // (grid_size + 1)
+            y_pos = j % (grid_size + 1)
+            distances_matrix[i, j] = np.linalg.norm([city_x - x_pos, city_y - y_pos])
 
     # Variables
-    satellite_positions = cp.Variable((grid_size + 1) ** 2, boolean=True)
-    is_covered = cp.Variable(len(cities_coordinates),  boolean=True)
+    satellite_positions = cp.Variable((grid_size + 1)**2, boolean=True)
+    city_covered = cp.Variable(num_cities, boolean=True)
 
     # Objective
-    objective = cp.Maximize(cp.sum(is_covered))
+    objective = cp.Maximize(cp.sum(city_covered))
 
-    # contraintes
+    # Constraints
     constraints = []
-    constraints.append([cp.sum(satellite_positions) == num_satellites])
+    for i in range(num_cities):
+        indices = []
+        for j in range((grid_size + 1)**2):
+            if distances_matrix[i, j] <= radius:
+                indices.append(j)
+        print(indices)
+        constraints.append(city_covered[i] == cp.sum(satellite_positions[indices]))
+    
+    constraints.append(cp.sum(satellite_positions) == N_satellites)
+    
+    
 
+    # Solve
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI)
+    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
+    print(solution_matrix)
+
+    # Results
+    print("Optimal satellite positions:")
+    """for city_coordinates in cities_coordinates:
+        solution_matrix[city_coordinates[0],city_coordinates[1]] = 2"""
+
+    coords = np.argwhere(solution_matrix == 1)
+    print(coords)
+    
+    coords_avec_colonne = np.c_[coords, np.full((len(coords), 1), radius)]
+
+    return coords_avec_colonne
     

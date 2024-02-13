@@ -82,12 +82,12 @@ def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10, numb
         radius = random.uniform(0.1, 3.0)
         radius = round(radius, 2)
         n_cities = random.randint(1, 20)
-        poids = list()
-        for j in range(n_cities):
-            poids.append(1/n_cities)
-        number_of_satellites = random.randint(1, n_cities)
+        poids = fm.create_weight(n_cities)
+
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
-        satellites_coordinates = fm.solve_2D(number_of_satellites,cities_coordinates, poids, grid_size, radius, )
+        nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
+        number_of_satellites = random.randint(1, nbr_max_sat)
+        satellites_coordinates = fm.solve_2D(number_of_satellites,cities_coordinates, poids, grid_size, radius )
         fm.plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size)
         plt.show()
 

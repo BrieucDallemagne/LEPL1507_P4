@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import cvxpy as cp
+import random
 
 def euclidean_distance(city_coords, satellite_coords):
     """
@@ -57,6 +58,31 @@ def is_covered_3D(city_coords, satellites_coords):
         if surface_radius >= city_satellite_distance:
             return True
     return False
+
+def create_weight(n_cities):
+    # take the number of cities
+    # return a random list of weights with 2 decimals so that the sum of the weights is 1
+    poids = list()
+    rest = 1
+    i = 0
+    while i < n_cities - 1 :
+        p = random.uniform(0.01, rest/2)
+        poids.append(p)
+        rest = rest - poids[i]
+        i = i + 1
+    poids.append(rest)
+
+
+    for i in range(n_cities):
+        poids[i] = round(poids[i],2)
+
+    
+    poids = np.array(poids)
+    diff = 1 - np.sum(poids)
+    poids[0] = poids[0] + diff
+    return poids
+
+
 
 
 def plot_covering_3D(cities_coordinates, satellites_coordinates):
@@ -140,7 +166,7 @@ satellites_coordinates = np.array([satellite_A, satellite_B, satellite_C])"""
 
 
 
-def solve_2D_outdated(cities_coordinates, grid_size, radius, num_satellites):
+def nbr_max_sat(cities_coordinates, grid_size, radius):
     num_cities = cities_coordinates.shape[0]
 
     # Create a matrix for distances
@@ -178,18 +204,14 @@ def solve_2D_outdated(cities_coordinates, grid_size, radius, num_satellites):
     satellite_indices = np.argwhere(solution_matrix == 1)
     num_satellites = satellite_indices.shape[0]  # Nombre de satellites placés
     satellites_coordinates = np.hstack((satellite_indices, np.full((num_satellites, 1), radius)))
-    print(satellites_coordinates)
     # Results
-    print("Optimal satellite positions:")
     for city_coordinates in cities_coordinates:
         if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1):
             solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
         else:
             solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
-    print(solution_matrix)
-    print("Optimal number of satellites: {}".format(problem.value))
 
-    return satellites_coordinates
+    return len(satellites_coordinates)
 
 def is_in_radius(city, satellite,radius, grid_size):
     if (city[0] - satellite[0]) ** 2 + (city[1] - satellite[1]) ** 2 <= radius ** 2:
@@ -223,7 +245,6 @@ def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, r
         for j in range((grid_size + 1)**2):
             if distances_matrix[i, j] <= radius:
                 indices.append(j)
-        print(indices)
         constraints.append(city_covered[i] == cp.sum(satellite_positions[indices]))
     
     constraints.append(cp.sum(satellite_positions) == N_satellites)
@@ -234,15 +255,20 @@ def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, r
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI)
     solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
-    print(solution_matrix)
+
 
     # Results
     print("Optimal satellite positions:")
-    """for city_coordinates in cities_coordinates:
-        solution_matrix[city_coordinates[0],city_coordinates[1]] = 2"""
-
     coords = np.argwhere(solution_matrix == 1)
-    print(coords)
+    for city_coordinates in cities_coordinates:
+        if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1):
+            solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
+        else:
+            solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
+
+    
+
+    print(solution_matrix)
     
     coords_avec_colonne = np.c_[coords, np.full((len(coords), 1), radius)]
 

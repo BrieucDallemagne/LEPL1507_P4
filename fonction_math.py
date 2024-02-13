@@ -137,7 +137,10 @@ cities_coordinates = np.array([city_A, city_B, city_C, city_D, city_E])
 satellites_coordinates = np.array([satellite_A, satellite_B, satellite_C])"""
 
 
-def solve_2D(cities_coordinates, grid_size, radius):
+
+
+
+def solve_2D(cities_coordinates, grid_size, radius, num_satellites):
     num_cities = cities_coordinates.shape[0]
 
     # Create a matrix for distances
@@ -188,4 +191,24 @@ def solve_2D(cities_coordinates, grid_size, radius):
 
     return satellites_coordinates
 
+def is_in_radius(city, satellite,radius, grid_size):
+    if (city[0] - satellite[0]) ** 2 + (city[1] - satellite[1]) ** 2 <= radius ** 2:
+        return True
+    return False
 
+def solve_2D_ws(cities_coordinates, grid_size, radius, num_satellites):
+
+    # Variables
+    satellite_positions = cp.Variable((grid_size + 1) ** 2, boolean=True)
+    is_covered = cp.Variable(len(cities_coordinates),  boolean=True)
+
+    # Objective
+    objective = cp.Maximize(cp.sum(is_covered))
+
+    # contraintes
+    constraints = []
+    constraints.append([cp.sum(satellite_positions) == num_satellites])
+
+    problem = cp.Problem(objective, constraints)
+    problem.solve(solver=cp.GLPK_MI)
+    

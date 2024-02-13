@@ -76,27 +76,18 @@ for i, city in enumerate(cities):
 pp.plot_plat(cities, satellites)
 
 #fin exemple
-
-
-
-
-cities_coordinates = np.array([
-    [1, 2],
-    [0, 1]
-])
-
-satellites_coordinates = fm.solve_2D(cities_coordinates, 5, 0.5)
-
-plot_covering_2D(cities_coordinates, satellites_coordinates, 5)
 """
-def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10):
+def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10, number_of_satellites=10):
     for i in range(n_tests):
         radius = random.uniform(0.1, 3.0)
         radius = round(radius, 2)
-        print(radius)
         n_cities = random.randint(1, 20)
+        poids = list()
+        for j in range(n_cities):
+            poids.append(1/n_cities)
+        number_of_satellites = random.randint(1, n_cities)
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
-        satellites_coordinates = fm.solve_2D(cities_coordinates, grid_size, radius)
+        satellites_coordinates = fm.solve_2D(number_of_satellites,cities_coordinates, poids, grid_size, radius, )
         fm.plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size)
         plt.show()
 

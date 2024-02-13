@@ -140,7 +140,7 @@ satellites_coordinates = np.array([satellite_A, satellite_B, satellite_C])"""
 
 
 
-def solve_2D(cities_coordinates, grid_size, radius, num_satellites):
+def solve_2D_outdated(cities_coordinates, grid_size, radius, num_satellites):
     num_cities = cities_coordinates.shape[0]
 
     # Create a matrix for distances
@@ -196,7 +196,7 @@ def is_in_radius(city, satellite,radius, grid_size):
         return True
     return False
 
-def solve_2D_v2(N_satellites, cities_coordinates, cities_weights, grid_size = 10, radius = 3):
+def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, radius = 3):
     num_cities = cities_coordinates.shape[0]
 
     # Create a matrix for distances

@@ -121,32 +121,38 @@ def is_covered_2D(city_coords, satellites_coords):
     return False
 
 
-def plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size):
+def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates, grid_size):
     # Extraire les coordonnées x et y des points
     x_coords, y_coords = zip(*cities_coordinates)
 
-    # cercles
-    for center, radius in zip(satellites_coordinates[:, :2], satellites_coordinates[:, 2]):
-        circle = Circle(center, radius, edgecolor='blue', facecolor='none', label='Satellites')
-        plt.gca().add_patch(circle)
-    # villes
-    for x_coord, y_coord in zip(x_coords, y_coords):
+    # Villes
+    population_proportion = 0
+    for x_coord, y_coord, weight in zip(x_coords, y_coords, cities_weights):
+        is_covered = is_covered_2D(np.array([x_coord, y_coord]), satellites_coordinates)
+        if is_covered:
+            population_proportion += weight
         plt.scatter(x_coord, y_coord,
-                    color='green' if is_covered_2D(np.array([x_coord, y_coord]), satellites_coordinates) else 'red',
-                    marker='o')
+                    color='green' if is_covered else 'red',
+                    marker='o',
+                    edgecolors='black',  # Add black borders to the markers
+                    linewidths=1,  # Increase the border width
+                    alpha=0.8)  # Reduce the transparency
+    
+    # Satellites
+    for center, radius in zip(satellites_coordinates[:, :2], satellites_coordinates[:, 2]):
+        circle = Circle(center, radius, edgecolor='blue', facecolor='none')
+        plt.gca().add_patch(circle)
+        circle.set_label(f'Satellites (Population Proportion: {np.round(population_proportion, decimals=4)})')
 
-    num_satellites = len(satellites_coordinates)
+    plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x')
 
-    # satellites
-    plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x',
-                label='Satellites')
-
-    plt.title(f'Network coverage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites for a radius of {radius}')
-    plt.xlabel('X coordinate')
-    plt.ylabel('Y coordinate')
+    plt.title(f'Network coverage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites for a radius of {radius}', fontweight='bold')  # Increase the title font size and weight
+    plt.xlabel('X coordinate', fontsize=12)
+    plt.ylabel('Y coordinate', fontsize=12)
     plt.axis('equal')
 
     plt.grid(color='gray', linestyle='dashed')
+    plt.legend()
 
     plt.show()
 

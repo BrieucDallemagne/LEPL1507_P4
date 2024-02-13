@@ -186,12 +186,3 @@ def solve_2D(cities_coordinates, grid_size, radius):
     return satellites_coordinates
 
 
-cities_coordinates = np.array([
-    [1, 2],
-    [0, 1]
-])
-
-satellites_coordinates = solve_2D(cities_coordinates, 5, 0.5)
-"""
-plot_covering_2D(cities_coordinates, satellites_coordinates, 5)
-"""

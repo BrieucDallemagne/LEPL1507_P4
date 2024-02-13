@@ -3,8 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import fonction_math as fm
 import plot_plat as pp
+import random
 
-"""Quelques exemples"""
+"""Quelques exemples
 city_A = [1, 2] # x, y
 city_B = [4, 8]
 city_C = [5, 2]
@@ -24,14 +25,14 @@ city_J = [0, 10]
 asia = np.array([city_F, city_G, city_H, city_I, city_J])
 
 planet = [europe, asia]
-"""print(euclildean_distance(city_A, satellite_A[:3]))
+print(euclildean_distance(city_A, satellite_A[:3]))
 print(euclildean_distance(city_A, satellite_B[:3]))
 print(euclildean_distance(city_A, satellite_C[:3]))
 
 print(total_intensity(city_A, satellites_coordinates[:, :3], 100))
 
 print(city_intensities(cities_coordinates, satellites_coordinates[:, :3], 100))
-"""
+
 
 radius_list = [1.0, 3.0, 5.0]
 
@@ -52,7 +53,7 @@ for continent in planet:
         print("\nPlotting coverage:")
         fm.plot_covering_2D(continent, satellites_coordinates, 15)
 
-"""
+
 
 #début exemple
 # Définir les coordonnées des villes
@@ -76,4 +77,24 @@ pp.plot_plat(cities, satellites)
 
 #fin exemple
 
+
+
+
+cities_coordinates = np.array([
+    [1, 2],
+    [0, 1]
+])
+
+satellites_coordinates = fm.solve_2D(cities_coordinates, 5, 0.5)
+
+plot_covering_2D(cities_coordinates, satellites_coordinates, 5)
 """
+def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10):
+    for i in range(n_tests):
+        cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
+        satellites_coordinates = fm.solve_2D(cities_coordinates, grid_size, radius)
+        fm.plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size)
+        plt.show()
+
+
+test_solve_2D_random(n_tests=30)

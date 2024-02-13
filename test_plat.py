@@ -79,7 +79,8 @@ pp.plot_plat(cities, satellites)
 """
 def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10, number_of_satellites=10):
     for i in range(n_tests):
-        radius = random.uniform(0.1, 3.0)
+        grid_size = random.randint(10, 100)
+        radius = random.uniform(0.1, grid_size*(0.3))
         radius = round(radius, 2)
         n_cities = random.randint(1, 20)
         poids = fm.create_weight(n_cities)
@@ -87,9 +88,29 @@ def test_solve_2D_random(grid_size=10, radius=1.0, n_cities=10, n_tests=10, numb
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
         nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
         number_of_satellites = random.randint(1, nbr_max_sat)
+        print('nombres de satellites optimal :', nbr_max_sat)
         satellites_coordinates = fm.solve_2D(number_of_satellites,cities_coordinates, poids, grid_size, radius )
-        fm.plot_covering_2D(cities_coordinates, satellites_coordinates, grid_size)
+        fm.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
         plt.show()
 
-
 test_solve_2D_random()
+
+"""
+X = np.array([100, 150, 300, 300, 700, 750, 800, 800, 800, 950, 1000, 1200, 1400, 1413, 1500])
+Y = np.array([30, 450, 200, 300, 50, 50, 400, 250, 300, 10, 420, 350, 270, 200, 430])
+cost = np.array([1, 4, 2, 10, 5, 3, 8, 1, 9, 2, 5, 8, 3, 1, 6])
+sum = np.sum(cost)
+for i in cost:
+    i = i/sum
+
+
+
+cities_coordinates = np.array([X, Y]).T
+
+N_satellites = 5
+
+satellites_coordinates = fm.solve_2D(N_satellites, cities_coordinates, cost, 1500, 150)
+fm.plot_covering_2D(cities_coordinates, cost, satellites_coordinates, 10)
+plt.show()
+"""
+

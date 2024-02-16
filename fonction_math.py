@@ -143,8 +143,11 @@ def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates,
         circle = Circle(center, radius, edgecolor='blue', facecolor='none')
         plt.gca().add_patch(circle)
 
-    plt.text(0.5, -0.1, f'Population Proportion: {np.round(population_proportion, decimals=4)}',
+    plt.text(0.85, -0.1, f'Population Proportion: {np.round(population_proportion, decimals=4)}',
              transform=plt.gca().transAxes, ha='center', va='center', fontsize=10)
+    # mettre le première arg à 0.1 pour afficher en bas à gauche
+        
+
 
     plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x')
 
@@ -154,7 +157,7 @@ def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates,
     plt.axis('equal')
 
     plt.grid(color='gray', linestyle='dashed')
-    plt.legend()
+
 
     plt.show()
 

@@ -229,7 +229,7 @@ def is_in_radius(city, satellite,radius, grid_size):
         return True
     return False
 
-def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, radius = 3):
+def solve_2D_v2(N_satellites, cities_coordinates, cities_weights, grid_size = 10, radius = 3):
     num_cities = cities_coordinates.shape[0]
 
     # Create a matrix for distances
@@ -291,7 +291,7 @@ def distance_angulaire(lat1, lon1, lat2, lon2):
     b=np.array([np.cos(lat2)*np.cos(lon2),np.cos(lat2)*np.sin(lon2),np.sin(lat2)])
     return np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))
 
-def solve_2D_v3(N_satellites, cities_coordinates, cities_weights, grid_size = 10, scope = 15, height = 4, intensity = 1000):
+def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, scope = 15, height = 4, intensity = 1000):
     num_cities = cities_coordinates.shape[0]
     radius = np.sqrt(scope**2 - height**2)
 
@@ -327,6 +327,9 @@ def solve_2D_v3(N_satellites, cities_coordinates, cities_weights, grid_size = 10
     # Solve
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI, warm_start=True)
+
+    if problem.status != cp.OPTIMAL:
+        raise Exception("The problem is not solvable")
 
     # Results
     print("Part de la population ayant accès au réseau")

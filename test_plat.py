@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import fonction_math as fm
 import plot_plat as pp
 import random
+import ancien_algo as aa
 
 
 def test_solve_2D_random( n_tests=10):
@@ -16,7 +17,7 @@ def test_solve_2D_random( n_tests=10):
         radius = np.sqrt(scope**2 - height**2)
 
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
-        nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
+        nbr_max_sat = aa.nbr_max_sat(cities_coordinates, grid_size, radius)
         number_of_satellites = random.randint(1, nbr_max_sat)
         print('nombres de satellites optimal :', nbr_max_sat)
         satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
@@ -32,7 +33,7 @@ def test_special_cases():
     cities_coordinates = np.array([[0, 0],[0,1]])
     radius = 0.95
     number_of_satellites = 1
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.8,0.2], 2, scope = 1, height = 0.05)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.8,0.2], 2, scope = 1, height = 0.2)
     fm.plot_covering_2D(cities_coordinates, [0.8,0.2], satellites_coordinates, 2)
 
     # cas 2 : 2 villes au même endroit

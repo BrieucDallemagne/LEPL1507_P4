@@ -151,7 +151,7 @@ def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates,
 
     plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x')
 
-    plt.title(f'Network coverage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites for a radius of {radius}', fontweight='bold')  # Increase the title font size and weight
+    plt.title(f'Network coverpage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites for a radius of {radius}', fontweight='bold')  # Increase the title font size and weight
     plt.xlabel('X coordinate', fontsize=12)
     plt.ylabel('Y coordinate', fontsize=12)
     plt.axis('equal')

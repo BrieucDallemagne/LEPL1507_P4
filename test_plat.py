@@ -6,16 +6,22 @@ import plot_plat as pp
 import random
 
 
-def test_solve_2D_random(grid_size=100, n_cities=10, scope=1000, height=100, max_sat=9):
-    poids = fm.create_weight(n_cities)
-    radius = np.sqrt(scope**2 - height**2)
+def test_solve_2D_random( n_tests=10):
+    for i in range(n_tests):
+        grid_size = random.randint(10, 100)
+        n_cities = random.randint(1, 20)
+        poids = fm.create_weight(n_cities)
+        height = random.randint(1, 10)
+        scope = random.randint(height, 20)
+        radius = np.sqrt(scope**2 - height**2)
 
-    cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
-    number_of_satellites = max_sat
-    #print('nombres de satellites optimal :', nbr_max_sat)
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
-    #fm.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
-    #plt.show()
+        cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
+        nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
+        number_of_satellites = random.randint(1, nbr_max_sat)
+        print('nombres de satellites optimal :', nbr_max_sat)
+        satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
+        fm.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
+        plt.show()
 
 
 
@@ -68,7 +74,7 @@ def test_special_cases():
 
 #test_solve_2D_random()
 
-#test_special_cases()
+test_special_cases()
 
 
 

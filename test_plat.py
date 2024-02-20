@@ -25,54 +25,56 @@ def test_solve_2D_random( n_tests=10):
 
 
 
-"""
+
 def test_special_cases():
     # Test de la fonction solve_2D pour des cas particuliers
     # Cas 1: limites de la version discrete
     cities_coordinates = np.array([[0, 0],[0,1]])
     radius = 0.95
     number_of_satellites = 1
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.5,0.5], 2, radius)
-    fm.plot_covering_2D(cities_coordinates, [0.5,0.5], satellites_coordinates, 2)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.8,0.2], 2, scope = 1, height = 0.05)
+    fm.plot_covering_2D(cities_coordinates, [0.8,0.2], satellites_coordinates, 2)
 
     # cas 2 : 2 villes au même endroit
     cities_coordinates = np.array([[0, 0],[0,0]])
     radius = 1
     number_of_satellites = 1
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.5,0.5], 2, radius)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.5,0.5], 2, scope=1, height=0)
     fm.plot_covering_2D(cities_coordinates, [0.5,0.5], satellites_coordinates, 2)
 
     # cas 3 : 1 satellite have to choice between 2 cities of big intensity and 3 cities of small intensity
     cities_coordinates = np.array([[0, 0],[0,1],[1,0],[3,3],[3,4]])
     radius = 2
     number_of_satellites = 1
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.1,0.1,0.1,0.4,0.3], 5, radius)
-    fm.plot_covering_2D(cities_coordinates, [0.1,0.1,0.1,0.4,0.3], satellites_coordinates, 5)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.1,0.01,0.09,0.4,0.4], 5, scope = 2, height = 0)
+    fm.plot_covering_2D(cities_coordinates, [0.1,0.01,0.09,0.4,0.4], satellites_coordinates, 5)
 
     # cas 4 : find best position between 4 satellites
     cities_coordinates = np.array([[1, 2],[0,1],[1,0],[2,1]])
     radius = 1
     number_of_satellites = 1
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.25,0.25,0.25,0.25], 5, radius)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.25,0.25,0.25,0.25], 5, scope = 1, height = 0)
     fm.plot_covering_2D(cities_coordinates, [0.25,0.25,0.25,0.25], satellites_coordinates, 5)
 
     # cas 5 : as many satellites as cities
     cities_coordinates = np.array([[1, 2],[0,1],[1,0],[2,1]])
     radius = 0.1
     number_of_satellites = 4
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.25,0.25,0.25,0.25], 5, radius)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [0.25,0.25,0.25,0.25], 5, scope = 1 , height = 0.7)
     fm.plot_covering_2D(cities_coordinates, [0.25,0.25,0.25,0.25], satellites_coordinates, 5)
 
     # cas 6 : 2 satellites for 1 city
     cities_coordinates = np.array([[1, 2]])
     radius = 1
     number_of_satellites = 2
-    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [1], 5, radius)
+    satellites_coordinates = fm.solve_2D(number_of_satellites, cities_coordinates, [1], 5, scope = 1, height = 0)
     fm.plot_covering_2D(cities_coordinates, [1], satellites_coordinates, 5)
 
-"""
 
-test_solve_2D_random()
+
+#test_solve_2D_random()
+
+test_special_cases()
 
 
 

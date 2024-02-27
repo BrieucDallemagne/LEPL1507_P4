@@ -59,6 +59,53 @@ def is_covered_3D(city_coords, satellites_coords):
             return True
     return False
 
+def nbr_max_sat(cities_coordinates, grid_size, radius):
+    num_cities = cities_coordinates.shape[0]
+
+    # Create a matrix for distances
+    distances_matrix = np.zeros((num_cities, (grid_size + 1) ** 2))
+
+    for i in range(num_cities):
+        city_x, city_y = cities_coordinates[i]
+        for j in range((grid_size + 1) ** 2):  # (0,0) puis (0,1) puis (0,2) ...
+            x_pos = j // (grid_size + 1)
+            y_pos = j % (grid_size + 1)
+            distances_matrix[i, j] = np.linalg.norm([city_x - x_pos, city_y - y_pos])
+
+    # Variables
+    satellite_positions = cp.Variable((grid_size + 1) ** 2, boolean=True)
+
+    # Objective
+    objective = cp.Minimize(cp.sum(satellite_positions))
+
+    # Constraints
+    constraints = []
+    for i in range(num_cities):
+        indices = []
+        for j in range((grid_size + 1) ** 2):
+            if distances_matrix[i, j] <= radius:
+                indices.append(j)
+
+        city_coverage = cp.sum(satellite_positions[indices])
+        constraints.append(city_coverage >= 1)
+
+    # Solve
+    problem = cp.Problem(objective, constraints)
+    problem.solve(solver=cp.GLPK_MI)
+    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size + 1, grid_size + 1)
+
+    satellite_indices = np.argwhere(solution_matrix == 1)
+    num_satellites = satellite_indices.shape[0]  # Nombre de satellites placés
+    satellites_coordinates = np.hstack((satellite_indices, np.full((num_satellites, 1), radius)))
+    # Results
+    for city_coordinates in cities_coordinates:
+        if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1):
+            solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
+        else:
+            solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
+
+    return len(satellites_coordinates)
+
 def create_weight(n_cities):
     # take the number of cities
     # return a random list of weights with 2 decimals so that the sum of the weights is 1
@@ -120,170 +167,11 @@ def is_covered_2D(city_coords, satellites_coords):
             return True
     return False
 
-
-def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates, grid_size):
-    # Extraire les coordonnées x et y des points
-    x_coords, y_coords = zip(*cities_coordinates)
-
-    # Villes
-    population_proportion = 0
-    for x_coord, y_coord, weight in zip(x_coords, y_coords, cities_weights):
-        is_covered = is_covered_2D(np.array([x_coord, y_coord]), satellites_coordinates)
-        if is_covered:
-            population_proportion += weight
-        plt.scatter(x_coord, y_coord,
-                    color='green' if is_covered else 'red',
-                    marker='o',
-                    edgecolors='black',
-                    linewidths=1,
-                    alpha=0.8)
-    
-    # Satellites
-    for center, radius in zip(satellites_coordinates[:, :2], satellites_coordinates[:, 2]):
-        circle = Circle(center, radius, color='red', alpha=0.1)
-        plt.gca().add_patch(circle)
-
-    plt.text(0.85, -0.1, f'Population Proportion: {np.round(population_proportion, decimals=4)}',
-             transform=plt.gca().transAxes, ha='center', va='center', fontsize=10)
-    # mettre le première arg à 0.1 pour afficher en bas à gauche
-        
-
-
-    plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x')
-
-    plt.title(f'Network coverpage of {len(cities_coordinates)} cities by {len(satellites_coordinates)} satellites for a radius of {round(radius, 4)}', fontweight='bold')  # Increase the title font size and weight
-    plt.xlabel('X coordinate', fontsize=12)
-    plt.ylabel('Y coordinate', fontsize=12)
-    plt.axis('equal')
-
-    plt.grid(color='gray', linestyle='dashed')
-
-
-    plt.show()
-
-
-"""city_A = np.array([1, 2, 0]) # x, y, z
-city_B = np.array([4, 8, 0])
-city_C = np.array([5, 2, 0])
-city_D = np.array([8, 14, 0])
-city_E = np.array([10, 6, 0])
-satellite_A = np.array([2, 5, 12, 13]) # x, y, z, range
-satellite_B = np.array([4, 3, 12, 13])
-satellite_C = np.array([11, 8, 12, 12.5])
-cities_coordinates = np.array([city_A, city_B, city_C, city_D, city_E])
-satellites_coordinates = np.array([satellite_A, satellite_B, satellite_C])"""
-
-
-
-
-
-def nbr_max_sat(cities_coordinates, grid_size, radius):
-    num_cities = cities_coordinates.shape[0]
-
-    # Create a matrix for distances
-    distances_matrix = np.zeros((num_cities, (grid_size + 1) ** 2))
-
-    for i in range(num_cities):
-        city_x, city_y = cities_coordinates[i]
-        for j in range((grid_size + 1) ** 2):  # (0,0) puis (0,1) puis (0,2) ...
-            x_pos = j // (grid_size + 1)
-            y_pos = j % (grid_size + 1)
-            distances_matrix[i, j] = np.linalg.norm([city_x - x_pos, city_y - y_pos])
-
-    # Variables
-    satellite_positions = cp.Variable((grid_size + 1) ** 2, boolean=True)
-
-    # Objective
-    objective = cp.Minimize(cp.sum(satellite_positions))
-
-    # Constraints
-    constraints = []
-    for i in range(num_cities):
-        indices = []
-        for j in range((grid_size + 1) ** 2):
-            if distances_matrix[i, j] <= radius:
-                indices.append(j)
-
-        city_coverage = cp.sum(satellite_positions[indices])
-        constraints.append(city_coverage >= 1)
-
-    # Solve
-    problem = cp.Problem(objective, constraints)
-    problem.solve(solver=cp.GLPK_MI)
-    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size + 1, grid_size + 1)
-
-    satellite_indices = np.argwhere(solution_matrix == 1)
-    num_satellites = satellite_indices.shape[0]  # Nombre de satellites placés
-    satellites_coordinates = np.hstack((satellite_indices, np.full((num_satellites, 1), radius)))
-    # Results
-    for city_coordinates in cities_coordinates:
-        if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1):
-            solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
-        else:
-            solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
-
-    return len(satellites_coordinates)
-
 def is_in_radius(city, satellite,radius, grid_size):
     if (city[0] - satellite[0]) ** 2 + (city[1] - satellite[1]) ** 2 <= radius ** 2:
         return True
     return False
 
-def solve_2D_v2(N_satellites, cities_coordinates, cities_weights, grid_size = 10, radius = 3):
-    num_cities = cities_coordinates.shape[0]
-
-    # Create a matrix for distances
-    distances_matrix = np.zeros((num_cities, (grid_size + 1)**2))
-
-    for i in range(num_cities):
-        city_x, city_y = cities_coordinates[i]
-        for j in range((grid_size + 1)**2): # (0,0) puis (0,1) puis (0,2) ...
-            x_pos = j // (grid_size + 1)
-            y_pos = j % (grid_size + 1)
-            distances_matrix[i, j] = np.linalg.norm([city_x - x_pos, city_y - y_pos])
-
-    # Variables
-    satellite_positions = cp.Variable((grid_size + 1)**2, boolean=True)
-    city_covered = cp.Variable(num_cities, boolean=True)
-
-    # Objective
-    objective = cp.Maximize(cp.sum(city_covered))
-
-    # Constraints
-    constraints = []
-    for i in range(num_cities):
-        indices = []
-        for j in range((grid_size + 1)**2):
-            if distances_matrix[i, j] <= radius:
-                indices.append(j)
-        constraints.append(city_covered[i] == cp.sum(satellite_positions[indices]))
-    
-    constraints.append(cp.sum(satellite_positions) == N_satellites)
-    
-    
-
-    # Solve
-    problem = cp.Problem(objective, constraints)
-    problem.solve(solver=cp.GLPK_MI)
-    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
-
-
-    # Results
-    print("Optimal satellite positions:")
-    coords = np.argwhere(solution_matrix == 1)
-    for city_coordinates in cities_coordinates:
-        if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1 or solution_matrix[city_coordinates[0], city_coordinates[1]] == 3):
-            solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
-        else:
-            solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
-
-    
-
-    print(solution_matrix)
-    
-    coords_avec_colonne = np.c_[coords, np.full((len(coords), 1), radius)]
-
-    return coords_avec_colonne
 
 def distance_angulaire(lat1, lon1, lat2, lon2):
     lat1 = np.radians(lat1);lon1 = np.radians(lon1);lat2 = np.radians(lat2);lon2 = np.radians(lon2)
@@ -291,73 +179,3 @@ def distance_angulaire(lat1, lon1, lat2, lon2):
     b=np.array([np.cos(lat2)*np.cos(lon2),np.cos(lat2)*np.sin(lon2),np.sin(lat2)])
     return np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))
 
-def solve_2D(N_satellites, cities_coordinates, cities_weights, grid_size = 10, scope = 15, height = 4, intensity = 1000):
-    num_cities = cities_coordinates.shape[0]
-    radius = np.sqrt(scope**2 - height**2)
-
-    # Create a matrix for distances
-    grid_points = np.array(np.meshgrid(np.arange(grid_size + 1), np.arange(grid_size + 1))).T.reshape(-1, 2)
-    distances_matrix = np.linalg.norm(cities_coordinates[:, np.newaxis, :] - grid_points, axis=2) # sqrt(x^2 + y^2)
-    distances_matrix = np.sqrt(np.square(distances_matrix) + np.square(height)) # sqrt(x^2 + y^2 + height^2)
-    inv_squared_distances_matrix = intensity / (4*math.pi*np.square(distances_matrix))
-
-    # Variables
-    satellite_positions = cp.Variable((grid_size + 1)**2, boolean=True)
-    city_covered = cp.Variable(num_cities, boolean=True)
-    how_many_times_covered = cp.Variable(num_cities, integer=True)
-
-    # Objective
-    objective = cp.Maximize(cp.sum(inv_squared_distances_matrix @ satellite_positions))
-    #objective = cp.Maximize(cp.sum(how_many_times_covered))
-
-    indices_within_scope = [
-        np.where(distances_matrix[i] <= scope)[0] for i in range(num_cities)
-    ]
-
-    # Constraints
-    constraints = []
-
-    constraints.append(cp.sum(satellite_positions) == N_satellites)
-    constraints.append(cp.sum(city_covered @ cities_weights) >= 0.8)
-    for i in range(num_cities):
-        constraints.append(how_many_times_covered[i] == cp.sum(satellite_positions[indices_within_scope[i]]))
-        constraints.append(city_covered[i] >= how_many_times_covered[i]/len(indices_within_scope[i]))
-        constraints.append(city_covered[i] <= how_many_times_covered[i])
-
-    # Solve
-    problem = cp.Problem(objective, constraints)
-    problem.solve(solver=cp.GLPK_MI, warm_start=True)
-
-    if problem.status != cp.OPTIMAL:
-        raise Exception("The problem is not solvable")
-
-    # Results
-    print("Part de la population ayant accès au réseau")
-    print(cp.sum(city_covered @ cities_weights).value)
-    print("Positions des satellites")
-    print(satellite_positions.value)
-    print("Villes couvertes")
-    print(city_covered.value)
-    print("Valeur de l'objectif")
-    print(problem.value)
-    print("Nombre de fois où chaque ville est couverte:")
-    print(how_many_times_covered.value)
-    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
-    coords = np.argwhere(solution_matrix == 1)
-    coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
-    print("Positions optimales des satellites:")
-    print(coords_avec_rayon)
-
-    return coords_avec_rayon
-
-def mapping(cities_coordinates, max_grid_size):
-    x_min = np.min(cities_coordinates[:, 0])
-    x_max = np.max(cities_coordinates[:, 0])
-    y_min = np.min(cities_coordinates[:, 1])
-    y_max = np.max(cities_coordinates[:, 1])
-    cities_coordinates -= np.array([x_min, y_min])
-    x_length = x_max - x_min
-    y_length = y_max - y_min
-    max_length = max(x_length, y_length)
-    transformation_ratio = max_grid_size / max_length
-    return cities_coordinates * transformation_ratio

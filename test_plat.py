@@ -72,14 +72,14 @@ def test_special_cases():
 
 def big_test():
     # test avec 100 villes et une grid de 2000x2000
-    grid_size = 2000
-    n_cities = 100
+    grid_size = 200
+    n_cities = 10
     poids = fm.create_weight(n_cities)
     height = 10
-    scope = 200
+    scope = 20
     radius = np.sqrt(scope**2 - height**2)
     cities = np.random.randint(0, grid_size, size=(n_cities, 2))
-    number_of_satellites = 25
+    number_of_satellites = 5
     satellites = fm.solve_2D(number_of_satellites, cities, poids, grid_size, scope, height, intensity=1000)
     fm.plot_covering_2D(cities, poids, satellites, grid_size)
     plt.show()

@@ -179,3 +179,27 @@ def distance_angulaire(lat1, lon1, lat2, lon2):
     b=np.array([np.cos(lat2)*np.cos(lon2),np.cos(lat2)*np.sin(lon2),np.sin(lat2)])
     return np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))
 
+def haversine(coord1, coord2):
+    """
+    Calculate the great circle distance between two points
+    on the earth (specified in decimal degrees)
+
+    Parameters:
+    - coord1 (numpy array): A tuple containing the latitude and longitude of the first point.
+    - coord2 (numpy array): A tuple containing the latitude and longitude of the second point.
+
+    Returns:
+    float: The distance between the two points in kilometers.
+    """
+    # convert decimal degrees to radians
+    lat1, lon1 = coord1
+    lat2, lon2 = coord2
+    lon1, lat1, lon2, lat2 = map(math.radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
+    c = 2 * math.asin(math.sqrt(a))
+    r = 6371  # Radius of earth in kilometers. Use 3956 for miles
+    return c * r

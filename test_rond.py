@@ -13,9 +13,8 @@ def test_solve_3D_random( n_tests=10):
         cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))
         cities_coordinates_longitude = np.random.randint(-180, 180, size=(n_cities))
         cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-        #number_of_satellites = np.random.randint(1, n_cities)
-        #satellites_coordinates = ssr.spherical_satellites_repartition(number_of_satellites, cities_coordinates, poids)
-        satellites_coordinates = [(10000, 0, 0), (0, 10000, 0)]  # Example satellite coordinates (x, y, z)
+        number_of_satellites = np.random.randint(1, n_cities)
+        satellites_coordinates = ssr.spherical_satellites_repartition(number_of_satellites, cities_coordinates, poids)
         pr.plot_3D(satellites_coordinates, cities_coordinates)
         plt.show()
 

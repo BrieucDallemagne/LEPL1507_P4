@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
 
-def plot_3D(satellites_coordinates, cities_coordinates):
+def plot_3D(satellites_coordinates, cities_coordinates, kmeans=False, original_cities_coordinates=np.array(0)):
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
 
@@ -27,7 +27,14 @@ def plot_3D(satellites_coordinates, cities_coordinates):
     cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in cities_coordinates]
     cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
     cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
-    ax.scatter(cities_x, cities_y, cities_z, color='g', marker='^', label='Cities')
+    if kmeans:
+        ax.scatter(cities_x, cities_y, cities_z, color='g', marker='^', label='Centroïds')
+        original_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in cities_coordinates]
+        original_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
+        original_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in original_cities_coordinates]
+        ax.scatter(original_x, original_y, original_z, color='y', marker='^', label='Cities')
+    else:
+        ax.scatter(cities_x, cities_y, cities_z, color='g', marker='^', label='Cities')
 
     # Set labels and title
     ax.set_xlabel('X (km)')

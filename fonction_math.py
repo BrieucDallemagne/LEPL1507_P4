@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
 import cvxpy as cp
 import random
+from sklearn.cluster import KMeans
 
 def euclidean_distance(city_coords, satellite_coords):
     """
@@ -203,3 +204,37 @@ def haversine(coord1, coord2):
     c = 2 * math.asin(math.sqrt(a))
     r = 6371  # Radius of earth in kilometers. Use 3956 for miles
     return c * r
+
+def k_means_cities(cities_coordinates, k, cities_weights):
+    """
+    Apply the k-means algorithm to the cities' coordinates
+    Args:
+        cities_coordinates: les coordonnées des villes
+        k: le nombre de centroïdes
+
+    Returns:
+
+    """
+    kmeans = KMeans(n_clusters=k )
+    kmeans.fit(cities_coordinates, cities_weights)
+    #retourne les nouveaux poids
+    new_weights = np.array([0 for i in range(k)], dtype=float)
+    prediction = kmeans.predict(cities_coordinates)
+    for i in range(len(cities_coordinates)):
+        new_weights[int(prediction[i])] += cities_weights[i]
+    return kmeans.cluster_centers_, new_weights
+
+#petit test mignon pas du tout à sa place qui plot les villes et les nouveaux centroïdes, et colorie de la même couleur les clustered cities
+def plot_kmeans(cities_coordinates, k, new_centroids):
+    plt.scatter(cities_coordinates[:, 0], cities_coordinates[:, 1], c='black')
+    plt.scatter(new_centroids[:, 0], new_centroids[:, 1], c='red')
+    plt.show()
+"""
+cities_coordinates = np.array([[1, 2],[0,1],[1,0],[2,1]])
+cities_weights = np.array([0.4,0.4,0.1,0.1])
+k = 3
+new_centroids, new_weights = k_means_cities(cities_coordinates, k, cities_weights)
+plot_kmeans(cities_coordinates, k, new_centroids)
+print(new_weights)
+
+"""

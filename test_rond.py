@@ -37,4 +37,4 @@ def test_solve_3D_random(n_tests=5, k_means=False):
             pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10)
         plt.show()
 
-#test_solve_3D_random( n_tests=5, k_means=False)
+test_solve_3D_random( n_tests=5, k_means=False)

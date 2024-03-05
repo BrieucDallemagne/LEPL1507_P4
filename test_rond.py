@@ -5,17 +5,25 @@ import random
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
 import plot_rond as pr
-import spherical_satellites_repartition as ssr
-import plot_rond as pr
 import math
 
 def test_solve_3D_random(n_tests=5, k_means=False):
     for i in range(n_tests):
-        n_cities = np.random.randint(2, 20)
-        #cities_weights = fm.create_weight(n_cities)
-        cities_weights = np.full(n_cities, 1/n_cities)
-        radius_earth = 50
+        n_cities = np.random.randint(2, 1000)
+        weights = fm.create_weight(n_cities)
+        #weights = np.full(n_cities, 1/n_cities)
+        new_count = 0
+        cities_weights = np.array([])
+        for weight in range(n_cities):
+            if weights[weight] > 1/(n_cities*100):
+                cities_weights = np.append(cities_weights, weights[weight])
+                new_count += 1
+        
+        n_cities = new_count
 
+
+                
+        radius_earth = 50
         cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))
         cities_coordinates_longitude = np.random.randint(-180, 180, size=(n_cities))
         cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]

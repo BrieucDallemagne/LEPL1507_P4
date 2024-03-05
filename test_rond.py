@@ -51,4 +51,7 @@ cities_weights = np.full(n_cities, 1/n_cities)
 print(cities_weights)
 
 satellites_coordinates = ssr.solve_3D(4, cities_coordinates, cities_weights, 30, 10)
-pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10)
+if satellites_coordinates.size == 0:
+    print("No solution found")
+else:
+    pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10)

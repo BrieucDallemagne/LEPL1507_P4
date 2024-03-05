@@ -93,6 +93,8 @@ def solve_3D(N_satellites, cities_coordinates, cities_weights, scope = 15, heigh
     objective = cp.Maximize(cp.sum(inv_squared_distances_matrix @ satellite_positions))
     #objective = cp.Maximize(cp.sum(how_many_times_covered))
 
+
+
     indices_within_scope = [
         np.where(distances_matrix[i] <= scope)[0] for i in range(num_cities)
     ]
@@ -112,7 +114,8 @@ def solve_3D(N_satellites, cities_coordinates, cities_weights, scope = 15, heigh
     # Solve
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI, warm_start=True)
-
+    if problem.status != cp.OPTIMAL:
+        return np.array([])
 
     # Results
     print("Part de la population ayant accès au réseau")

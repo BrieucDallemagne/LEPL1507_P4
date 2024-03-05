@@ -9,7 +9,7 @@ def plot_3D_old(satellites_coordinates, cities_coordinates, kmeans=False, origin
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
 
-    radius_earth = 6371  
+    radius_earth = 50
     latitudes = np.linspace(-90, 90, 100)  
     longitudes = np.linspace(-180, 180, 200)  
     longitude_grid, latitude_grid = np.meshgrid(np.radians(longitudes), np.radians(latitudes))
@@ -57,7 +57,7 @@ def is_covered_3D(city_coords, satellites_coords, scope):
     return False
 
 
-def plot_3D(cities_coordinates, satellites_coordinates,  height):
+def plot_3D(cities_coordinates, satellites_coordinates, height):
 
     sphere_center = (0, 0, 0)
 
@@ -66,8 +66,8 @@ def plot_3D(cities_coordinates, satellites_coordinates,  height):
     ax = fig.add_subplot(111, projection='3d')
 
     # Rayon de la sphère
-    earth_radius = 50
-    satellite_radius = 50 + height
+    earth_radius = 6371
+    satellite_radius = 6371 + height
     scope = fm.find_x(height, earth_radius)
 
     # Créer la terre
@@ -118,9 +118,9 @@ def plot_3D(cities_coordinates, satellites_coordinates,  height):
         ax.scatter(x_city, y_city, z_city, c='green' if is_covered else "red", s=20, marker='o')
 
     # Configurer les limites de l'axe
-    ax.set_xlim(-70, 70)
-    ax.set_ylim(-70, 70)
-    ax.set_zlim(-70, 70)
+    ax.set_xlim(-7000, 7000)
+    ax.set_ylim(-7000, 7000)
+    ax.set_zlim(-7000, 7000)
 
     # Make all axes equal in size
     ax.set_box_aspect([1, 1, 1])

@@ -70,8 +70,8 @@ def plot_3D(cities_coordinates, satellites_coordinates, scope, height):
     satellite_radius = 50 + height
 
     # Créer la terre
-    u = np.linspace(0, 2 * np.pi, 100)
-    v = np.linspace(0, np.pi, 100)
+    u = np.linspace(0, 2 * np.pi, 25)
+    v = np.linspace(0, np.pi, 25)
     x = sphere_center[0] + earth_radius * np.outer(np.cos(u), np.sin(v))
     y = sphere_center[1] + earth_radius * np.outer(np.sin(u), np.sin(v))
     z = sphere_center[2] + earth_radius * np.outer(np.ones(np.size(u)), np.cos(v))
@@ -80,15 +80,15 @@ def plot_3D(cities_coordinates, satellites_coordinates, scope, height):
     ax.plot_surface(x, y, z, color='gray', alpha=0.3)
 
     # Dessiner le quadrillage
-    theta_values = np.linspace(0, 2 * np.pi, 7)[1:-1]
-    phi_values = np.linspace(0, np.pi, 9)[1:-1]
+    theta_values = np.linspace(0, 2 * np.pi, 20)[1:]
+    phi_values = np.linspace(0, np.pi, 20)[1:-1]
 
     theta, phi = np.meshgrid(theta_values, phi_values)
     x_grid = sphere_center[0] + satellite_radius * np.sin(phi) * np.cos(theta)
     y_grid = sphere_center[1] + satellite_radius * np.sin(phi) * np.sin(theta)
     z_grid = sphere_center[2] + satellite_radius * np.cos(phi)
 
-    ax.plot_wireframe(x_grid, y_grid, z_grid, color='black', linewidth=0.5)
+    #ax.plot_wireframe(x_grid, y_grid, z_grid, color='black', linewidth=0.5)
 
     #ax.scatter(x_grid, y_grid, z_grid, color='red', s=10, alpha=0.2)
 

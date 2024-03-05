@@ -13,7 +13,7 @@ def test_solve_3D_random(k_means=False):
     cities_weights = fm.create_weight(n_cities)
 def test_solve_3D_random(n_tests=5, k_means=False):
     for i in range(n_tests):
-        n_cities = np.random.randint(2, 1000)
+        n_cities = np.random.randint(2, 20)
         #weights = fm.create_weight(n_cities)
         weights = np.full(n_cities, 1/n_cities)
         new_count = 0

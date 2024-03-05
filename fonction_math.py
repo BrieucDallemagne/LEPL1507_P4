@@ -231,6 +231,6 @@ def plot_kmeans(cities_coordinates, k, new_centroids):
     plt.show()
 
 
-def find_x(height = 4) :
-    earth_radius = 50
+def find_x(height = 4,earth_radius = 50) :
+    
     return np.sqrt(2*height*earth_radius+height**2)

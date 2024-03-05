@@ -2,6 +2,7 @@ import fonction_math as fm
 import numpy as np
 import cvxpy as cp
 import math
+from scipy.spatial.distance import cdist
 
 def spherical_satellites_repartition( N_satellites ,cities_coordinates,  cities_weights):
 

@@ -5,6 +5,9 @@ import random
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
 import plot_rond as pr
+import spherical_satellites_repartition as ssr
+import plot_rond as pr
+import math
 
 def test_solve_3D_random(n_tests=5, k_means=False):
     for i in range(n_tests):
@@ -25,4 +28,25 @@ def test_solve_3D_random(n_tests=5, k_means=False):
             pr.plot_3D(satellites_coordinates, cities_coordinates)
         plt.show()
 
-test_solve_3D_random( n_tests=5, k_means=False)
+#test_solve_3D_random( n_tests=5, k_means=False)
+
+n_cities = 8
+radius_earth = 50
+
+cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))
+cities_coordinates_longitude = np.random.randint(-180, 180, size=(n_cities))
+cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
+
+cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in cities_coordinates]
+cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
+cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
+cities_coordinates = np.c_[cities_x, cities_y, cities_z]
+
+print("Cities coordinates")
+print(cities_coordinates)
+
+cities_weights = np.full(n_cities, 1/n_cities)
+print(cities_weights)
+
+satellites_coordinates = ssr.solve_3D(4, cities_coordinates, cities_weights, 30, 10)
+pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10)

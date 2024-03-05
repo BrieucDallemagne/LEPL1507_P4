@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
+import math
 
 def plot_3D_old(satellites_coordinates, cities_coordinates, kmeans=False, original_cities_coordinates=np.array(0)):
     fig = plt.figure(figsize=(10, 8))

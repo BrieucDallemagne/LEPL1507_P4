@@ -68,6 +68,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, scope, height):
     # Rayon de la sphère
     earth_radius = 50
     satellite_radius = 50 + height
+    scope = fm.find_x(height, earth_radius)
 
     # Créer la terre
     u = np.linspace(0, 2 * np.pi, 25)

@@ -57,7 +57,7 @@ def is_covered_3D(city_coords, satellites_coords, scope):
     return False
 
 
-def plot_3D(cities_coordinates, satellites_coordinates, scope, height):
+def plot_3D(cities_coordinates, satellites_coordinates,  height):
 
     sphere_center = (0, 0, 0)
 

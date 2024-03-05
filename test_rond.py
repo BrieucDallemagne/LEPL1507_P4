@@ -38,13 +38,13 @@ def test_solve_3D_random(n_tests=5, k_means=False):
             cities_coordinates, poids = fm.k_means_cities(cities_coordinates, n_cities-1, poids)
         #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
-        satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 30, 10)
+        satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights,  10)
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
         if k_means:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10, True, original_cities)
+            pr.plot_3D(cities_coordinates, satellites_coordinates,  10, True, original_cities)
         else:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10)
+            pr.plot_3D(cities_coordinates, satellites_coordinates,  10)
         plt.show()
 
 test_solve_3D_random( n_tests=5, k_means=False)

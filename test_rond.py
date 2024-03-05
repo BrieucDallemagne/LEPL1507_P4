@@ -19,6 +19,8 @@ def test_solve_3D_random(n_tests=5, k_means=False):
         #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
         satellites_coordinates = ssr.spherical_satellites_repartition(number_of_satellites, cities_coordinates, poids)
+        if satellites_coordinates == np.array([]):
+            continue
         if k_means:
             pr.plot_3D(satellites_coordinates, cities_coordinates, True, original_cities)
         else:

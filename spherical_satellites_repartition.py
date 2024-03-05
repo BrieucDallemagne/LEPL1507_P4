@@ -41,7 +41,7 @@ def spherical_satellites_repartition( N_satellites ,cities_coordinates,  cities_
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI, warm_start=True)
     if problem.status != cp.OPTIMAL:
-        raise Exception("The problem is not solvable")
+        return np.array([])
     # Results
     satellites_coordinates = []
     for i in range(num_cities):

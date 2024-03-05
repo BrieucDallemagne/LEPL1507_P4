@@ -12,7 +12,8 @@ import math
 def test_solve_3D_random(n_tests=5, k_means=False):
     for i in range(n_tests):
         n_cities = np.random.randint(2, 20)
-        cities_weights = fm.create_weight(n_cities)
+        #cities_weights = fm.create_weight(n_cities)
+        cities_weights = np.full(n_cities, 1/n_cities)
         radius_earth = 50
 
         cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))

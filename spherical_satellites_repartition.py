@@ -8,7 +8,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, scope =
     num_cities = cities_coordinates.shape[0]
 
     earth_radius = 50
-    satellite_radius = earth_radius + height
+    satellite_radius = fm.find_x(height)
     sphere_center = (0, 0, 0)
 
     theta_values = np.linspace(0, 2 * np.pi, 20)[1:]

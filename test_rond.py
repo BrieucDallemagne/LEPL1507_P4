@@ -14,8 +14,8 @@ def test_solve_3D_random(k_means=False):
 def test_solve_3D_random(n_tests=5, k_means=False):
     for i in range(n_tests):
         n_cities = np.random.randint(2, 1000)
-        weights = fm.create_weight(n_cities)
-        #weights = np.full(n_cities, 1/n_cities)
+        #weights = fm.create_weight(n_cities)
+        weights = np.full(n_cities, 1/n_cities)
         new_count = 0
         cities_weights = np.array([])
         for weight in range(n_cities):
@@ -23,10 +23,7 @@ def test_solve_3D_random(n_tests=5, k_means=False):
                 cities_weights = np.append(cities_weights, weights[weight])
                 new_count += 1
         
-        n_cities = new_count
-
-
-                
+        n_cities = new_count 
         radius_earth = 50
         cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))
         cities_coordinates_longitude = np.random.randint(-180, 180, size=(n_cities))

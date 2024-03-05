@@ -4,24 +4,15 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
 import math
-<<<<<<< HEAD
-=======
 
->>>>>>> 7fd28ddd647a892457e4534519cb02a54e3fd598
 
 def plot_3D_old(satellites_coordinates, cities_coordinates, kmeans=False, original_cities_coordinates=np.array(0)):
     fig = plt.figure(figsize=(10, 8))
     ax = fig.add_subplot(111, projection='3d')
 
-<<<<<<< HEAD
-    radius_earth = 50
-    latitudes = np.linspace(-90, 90, 100)  
-    longitudes = np.linspace(-180, 180, 200)  
-=======
     radius_earth = 6371
     latitudes = np.linspace(-90, 90, 100)
     longitudes = np.linspace(-180, 180, 200)
->>>>>>> 7fd28ddd647a892457e4534519cb02a54e3fd598
     longitude_grid, latitude_grid = np.meshgrid(np.radians(longitudes), np.radians(latitudes))
     x = radius_earth * np.cos(latitude_grid) * np.cos(longitude_grid)
     y = radius_earth * np.cos(latitude_grid) * np.sin(longitude_grid)
@@ -75,10 +66,6 @@ def is_covered_3D(city_coords, satellites_coords, scope):
 
 
 def plot_3D(cities_coordinates, satellites_coordinates, height):
-<<<<<<< HEAD
-
-=======
->>>>>>> 7fd28ddd647a892457e4534519cb02a54e3fd598
     sphere_center = (0, 0, 0)
 
     # Créer le plot en 3D
@@ -86,13 +73,8 @@ def plot_3D(cities_coordinates, satellites_coordinates, height):
     ax = fig.add_subplot(111, projection='3d')
 
     # Rayon de la sphère
-<<<<<<< HEAD
-    earth_radius = 6371
-    satellite_radius = 6371 + height
-=======
     earth_radius = 50
     satellite_radius = 50 + height
->>>>>>> 7fd28ddd647a892457e4534519cb02a54e3fd598
     scope = fm.find_x(height, earth_radius)
 
     # Créer la terre
@@ -138,25 +120,15 @@ def plot_3D(cities_coordinates, satellites_coordinates, height):
         z = z_s + scope * np.outer(np.ones(np.size(u)), np.cos(v))
         ax.plot_surface(x, y, z, color='gray', alpha=0.3)
 
-<<<<<<< HEAD
-    
-=======
->>>>>>> 7fd28ddd647a892457e4534519cb02a54e3fd598
     for x_city, y_city, z_city in cities_coordinates:
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
         # print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
         ax.scatter(x_city, y_city, z_city, c='green' if is_covered else "red", s=20, marker='o')
 
     # Configurer les limites de l'axe
-<<<<<<< HEAD
-    ax.set_xlim(-7000, 7000)
-    ax.set_ylim(-7000, 7000)
-    ax.set_zlim(-7000, 7000)
-=======
     ax.set_xlim(-70, 70)
     ax.set_ylim(-70, 70)
     ax.set_zlim(-70, 70)
->>>>>>> 7fd28ddd647a892457e4534519cb02a54e3fd598
 
     # Make all axes equal in size
     ax.set_box_aspect([1, 1, 1])

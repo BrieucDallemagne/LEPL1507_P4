@@ -4,10 +4,11 @@ import cvxpy as cp
 import math
 from scipy.spatial.distance import cdist
 
-def spherical_satellites_repartition(cities_coordinates, cities_weights, scope = 15, height = 4, verbose=False):
+def spherical_satellites_repartition(cities_coordinates, cities_weights, height = 4, verbose=False):
     num_cities = cities_coordinates.shape[0]
 
     earth_radius = 50
+    scope = fm.find_x(height,earth_radius)
     satellite_radius = earth_radius + height
     sphere_center = (0, 0, 0)
 

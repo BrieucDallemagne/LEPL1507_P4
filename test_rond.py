@@ -8,7 +8,11 @@ import plot_rond as pr
 import spherical_satellites_repartition as ssr
 import plot_rond as pr
 import math
-
+import matplotlib
+matplotlib.use('TkAgg')
+def test_solve_3D_random(k_means=False):
+    n_cities = 5
+    cities_weights = fm.create_weight(n_cities)
 def test_solve_3D_random(n_tests=5, k_means=False):
     for i in range(n_tests):
         n_cities = np.random.randint(2, 20)
@@ -29,7 +33,7 @@ def test_solve_3D_random(n_tests=5, k_means=False):
         #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 30, 10)
-        if satellites_coordinates == np.array([]):
+        if np.array_equal(satellites_coordinates, np.array([])):
             continue
         if k_means:
             pr.plot_3D(cities_coordinates, satellites_coordinates, 30, 10, True, original_cities)

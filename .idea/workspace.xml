@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="13080874-ea55-405b-b2f2-06d31e2b5694" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plot_rond.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_rond.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/spherical_satellites_repartition.py" beforeDir="false" afterPath="$PROJECT_DIR$/spherical_satellites_repartition.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_rond.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_rond.py" afterDir="false" />
     </list>
@@ -43,23 +44,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.fonction_math.executor": "Run",
-    "Python.plot_rond.executor": "Run",
-    "Python.spherical_satellites_repartition.executor": "Run",
-    "Python.test_rond.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "last_opened_file_path": "C:/Users/pierr/LEPL1507_P4/test_rond.py",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.fonction_math.executor&quot;: &quot;Run&quot;,
+    &quot;Python.plot_rond.executor&quot;: &quot;Run&quot;,
+    &quot;Python.spherical_satellites_repartition.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test_rond.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/pierr/LEPL1507_P4/test_rond.py&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.notifications&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Python.test_rond">
     <configuration name="test_perf" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="ENV_FILES" value="" />
@@ -129,7 +130,8 @@
       <option name="presentableId" value="Default" />
       <updated>1707343542880</updated>
       <workItem from="1707343544767" duration="21636000" />
-      <workItem from="1709577246704" duration="2573000" />
+      <workItem from="1709577246704" duration="3272000" />
+      <workItem from="1709628972694" duration="659000" />
     </task>
     <servers />
   </component>
@@ -162,18 +164,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test_rond.py</url>
-          <line>20</line>
+          <line>31</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spherical_satellites_repartition.py</url>
-          <line>27</line>
+          <line>6</line>
           <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/spherical_satellites_repartition.py</url>
-          <line>132</line>
-          <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -184,6 +181,6 @@
     <SUITE FILE_PATH="coverage/LEPL1507_P4$test_plat.coverage" NAME="test_plat Coverage Results" MODIFIED="1708417446160" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LEPL1507_P4$plot_rond.coverage" NAME="plot_rond Coverage Results" MODIFIED="1709576537740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LEPL1507_P4$fonction_math.coverage" NAME="fonction_math Coverage Results" MODIFIED="1709575811245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/LEPL1507_P4$test_rond.coverage" NAME="test_rond Coverage Results" MODIFIED="1709627803433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LEPL1507_P4$test_rond.coverage" NAME="test_rond Coverage Results" MODIFIED="1709629618439" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

@@ -95,13 +95,13 @@ def plot_3D(cities_coordinates, satellites_coordinates, scope, height):
     x_sat = sphere_center[0] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.cos(satellites_coordinates[:, 0])
     y_sat = sphere_center[1] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.sin(satellites_coordinates[:, 0])
     z_sat = sphere_center[2] + satellite_radius * np.cos(satellites_coordinates[:, 1])
-    print("lol")
-    print(satellites_coordinates)
-    print(x_sat)
-    print(y_sat)
-    print(z_sat)
+
+    #print(satellites_coordinates)
+    #print(x_sat)
+    #print(y_sat)
+    #print(z_sat)
     satellites_spherical_coordinates = np.c_[x_sat, y_sat, z_sat]
-    print(satellites_spherical_coordinates)
+    #print(satellites_spherical_coordinates)
 
     ax.scatter(x_sat, y_sat, z_sat, color='blue', s=40, label='Satellites')
     for x_s, y_s, z_s in zip(x_sat, y_sat, z_sat):
@@ -113,7 +113,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, scope, height):
     
     for x_city, y_city, z_city in cities_coordinates:
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
-        print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
+        #print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
         ax.scatter(x_city, y_city, z_city, c='green' if is_covered else "red", s=20, marker='o')
 
     # Configurer les limites de l'axe

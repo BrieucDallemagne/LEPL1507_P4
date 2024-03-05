@@ -6,7 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="13080874-ea55-405b-b2f2-06d31e2b5694" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fonction_math.py" beforeDir="false" afterPath="$PROJECT_DIR$/fonction_math.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plot_rond.py" beforeDir="false" afterPath="$PROJECT_DIR$/plot_rond.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/spherical_satellites_repartition.py" beforeDir="false" afterPath="$PROJECT_DIR$/spherical_satellites_repartition.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_rond.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_rond.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -163,12 +165,12 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/test_rond.py</url>
-          <line>32</line>
+          <line>44</line>
           <option name="timeStamp" value="15" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/spherical_satellites_repartition.py</url>
-          <line>6</line>
+          <line>7</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
@@ -180,6 +182,6 @@
     <SUITE FILE_PATH="coverage/LEPL1507_P4$test_plat.coverage" NAME="test_plat Coverage Results" MODIFIED="1708417446160" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LEPL1507_P4$plot_rond.coverage" NAME="plot_rond Coverage Results" MODIFIED="1709576537740" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/LEPL1507_P4$fonction_math.coverage" NAME="fonction_math Coverage Results" MODIFIED="1709575811245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/LEPL1507_P4$test_rond.coverage" NAME="test_rond Coverage Results" MODIFIED="1709633811091" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/LEPL1507_P4$test_rond.coverage" NAME="test_rond Coverage Results" MODIFIED="1709635303930" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

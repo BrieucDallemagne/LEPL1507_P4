@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
 import math
-
+from matplotlib import animation
 
 def plot_3D_old(satellites_coordinates, cities_coordinates, kmeans=False, original_cities_coordinates=np.array(0)):
     fig = plt.figure(figsize=(10, 8))
@@ -65,7 +65,7 @@ def is_covered_3D(city_coords, satellites_coords, scope):
     return False
 
 
-def plot_3D(cities_coordinates, satellites_coordinates, height):
+def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, scope, height, kmeans=False, original_cities_coordinates=np.array(0), original_cities_weights=np.array(0), rot=False):
     sphere_center = (0, 0, 0)
 
     # Créer le plot en 3D
@@ -124,7 +124,16 @@ def plot_3D(cities_coordinates, satellites_coordinates, height):
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
         # print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
         ax.scatter(x_city, y_city, z_city, c='green' if is_covered else "red", s=20, marker='o')
-
+    i = 0
+    if kmeans:
+        for x_city, y_city, z_city in original_cities_coordinates:
+            is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
+            # print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
+            ax.scatter(x_city, y_city, z_city, c='pink' if is_covered else "orange", s=20, marker='o')
+            ax.text(x_city, y_city, z_city, '%s' % (str(original_cities_weights[i])), size=5, zorder=1,
+                    color='k')
+            i += 1
+            # Configurer les limites de l'axe
     # Configurer les limites de l'axe
     ax.set_xlim(-70, 70)
     ax.set_ylim(-70, 70)
@@ -140,4 +149,11 @@ def plot_3D(cities_coordinates, satellites_coordinates, height):
     ax.set_xlabel('X')
     ax.set_ylabel('Y')
     ax.set_zlabel('Z')
+    if rot:
+        def animate(frame):
+            ax.view_init(30, 6 * frame)
+            plt.pause(.001)
+            return fig
+
+        anim = animation.FuncAnimation(fig, animate, frames=200, interval=100)
     plt.show()

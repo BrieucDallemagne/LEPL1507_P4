@@ -10,7 +10,7 @@ import matplotlib
 
 matplotlib.use('TkAgg')
 
-def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False):
+def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = False):
     for i in range(n_tests):
         if fix_seed:
             n_cities = 5
@@ -38,7 +38,7 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False):
             cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, n_cities//2, cities_weights)
         #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
-        satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10)
+        satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
         if k_means:
@@ -48,4 +48,4 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False):
         plt.show()
 
 
-test_solve_3D_random(n_tests=5, k_means=False, fix_seed=False)
+test_solve_3D_random(n_tests=5, k_means=False, fix_seed=False, verbose=True)

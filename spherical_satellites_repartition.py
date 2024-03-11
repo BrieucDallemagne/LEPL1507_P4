@@ -45,13 +45,6 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     indices_within_scope = [
         np.where(distances_matrix[i] <= scope)[0] for i in range(num_cities)
     ]
-    if verbose:
-        print(distances_matrix)
-        print(grid_points)
-        print(theta)
-        print(phi)
-        print("Indices within scope")
-        print(indices_within_scope)
 
     # Constraints
     constraints = []
@@ -78,7 +71,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         print(satellite_positions.value)
         print("Villes couvertes")
         print(city_covered.value)
-        print("Valeur de l'objectif")
+        print("Valeur de l'objectif (nombre de satellites minimum)")
         print(problem.value)
         print("Intensités des villes")
         print((inv_squared_distances_matrix @ satellite_positions).value)
@@ -86,8 +79,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         print(how_many_times_covered.value)
         print("Solution matrix")
         print(solution_matrix)
-        print(where)
-        print("Coords")
+        print("Coordonnées des satellites (theta, phi)")
         print(coords)
 
     """coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]

@@ -229,15 +229,6 @@ def plot_kmeans(cities_coordinates, k, new_centroids):
     plt.scatter(cities_coordinates[:, 0], cities_coordinates[:, 1], c='black')
     plt.scatter(new_centroids[:, 0], new_centroids[:, 1], c='red')
     plt.show()
-"""
-cities_coordinates = np.array([[1, 2],[0,1],[1,0],[2,1]])
-cities_weights = np.array([0.4,0.4,0.1,0.1])
-k = 3
-new_centroids, new_weights = k_means_cities(cities_coordinates, k, cities_weights)
-plot_kmeans(cities_coordinates, k, new_centroids)
-print(new_weights)
-
-"""
 
 def find_x(height=4, earth_radius=50):
     return np.sqrt(2 * height * earth_radius + height ** 2)

@@ -65,7 +65,7 @@ def is_covered_3D(city_coords, satellites_coords, scope):
     return False
 
 
-def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, scope, height, kmeans=False, original_cities_coordinates=np.array(0), original_cities_weights=np.array(0), rot=False):
+def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, original_cities_coordinates=np.array(0), original_cities_weights=np.array(0), kmeans=False,rot=False):
     sphere_center = (0, 0, 0)
 
     # Créer le plot en 3D

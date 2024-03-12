@@ -126,21 +126,26 @@ def plot_3D_old(cities_coordinates, satellites_coordinates, cities_weights, heig
     plt.show()
 
 def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, original_cities_coordinates=np.array(0), original_cities_weights=np.array(0), kmeans=False,rot=False):
+
     sphere_center = (0, 0, 0)
     earth_radius = 50
 
     # Créer le plot en 3D
     plotter = pv.Plotter()
+    plotter.set_background('black')
     earth_mesh = pv.examples.planets.load_earth()
-    earth_mesh.points *= 3.5*earth_radius / earth_mesh.length
-    texture = pv.read_texture("LEPL1507_P4\earth.jpg")
+    earth_mesh.points *= earth_radius
+    texture = pv.read_texture("LEPL1507_P4\Planet_Images\earth.jpg")
     plotter.add_mesh(earth_mesh, texture=texture)
 
-    """plotter = pv.Plotter()
-    earth_mesh = pv.Sphere(radius=earth_radius)
-    earth_mesh.texture_map_to_sphere(inplace=True)
-    texture = pv.read_texture("D:\\Alexis\\Documents\\Q6\\Projet Math App\\Code\\earth.jpg")
-    plotter.add_mesh(earth_mesh, texture=texture)"""
+    # Autre planète (facultatif)
+    second_mesh = pv.examples.planets.load_earth()
+    second_texture = pv.read_texture("LEPL1507_P4\Planet_Images\sun.jpg")
+    second_mesh.points = 300*second_mesh.points + np.array([1000, 1000, 1000])
+    second_mesh.rotate_x(135)
+    second_mesh.rotate_y(45)
+    second_mesh.rotate_z(90)
+    plotter.add_mesh(second_mesh, texture=second_texture)
 
     # Rayon de la sphère
     satellite_radius = 50 + height
@@ -160,11 +165,14 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     satellites_spherical_coordinates = np.c_[x_sat, y_sat, z_sat]
 
     # Dessiner les villes
+    satisfied_proportion = 0
     for i, (x_city, y_city, z_city) in enumerate(cities_coordinates):
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
-        color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else \
-                'orange' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else \
+        if has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope): satisfied_proportion += cities_weights[i]
+        color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
+                'orange' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
                 'red'
+        if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
         plotter.add_mesh(pv.Sphere(radius=earth_radius/15, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
     if kmeans:
@@ -175,10 +183,11 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
             plotter.add_text(str(original_cities_weights[i]), position=(x_city, y_city, z_city), font_size=5)
     
     # Position de la caméra
-    if rot:
-        plotter.enable_eye_dome_lighting()
-        plotter.enable_anti_aliasing()
-        plotter.camera_position = 'xy'
+    plotter.camera_position = [(-250, -250, -250), (0, 0, -1), (0, 1, 0)]
+
+    # Légendage
+    plotter.add_text(f"{cities_coordinates.shape[0]} villes, {satellites_coordinates.shape[0]} satellites", position="upper_right", font_size=10, color="white")
+    plotter.add_text(f"{np.round(satisfied_proportion*100, decimals=2)} % de la population a une couverture réseau acceptable (I > {np.round(fm.minimum_intensity(height, earth_radius, fm.I)[0], decimals=7)})", position="upper_left", font_size=12, color="white")
 
     # Show the plot
     plotter.show()

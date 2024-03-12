@@ -19,7 +19,8 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
             cities_coordinates_latitude = [0, 45, -45, 0, 0]
             cities_coordinates_longitude = [0, 30, 60, 90, 120]
         else:
-            n_cities = np.random.randint(2, 20)
+            n_cities = np.random.randint(5, 100)
+            print("Test avec", n_cities, "visssslles")
             #cities_weights = fm.create_weight(n_cities)
             cities_weights = np.full(n_cities, 1/n_cities)
             radius_earth = 50

@@ -184,12 +184,9 @@ def find_x(height=4, earth_radius=50):
 def I(r) :
     return 1/r**2
 
-def minimum_intensity(height):
-    return I(height)
-
-def inten_min(height, earth_radius, I) :
+def minimum_intensity(height, earth_radius, I) :
     thetamax=np.pi/2-np.arccos(earth_radius/(height+earth_radius))
-    thetacool=thetamax/2
+    thetacool=thetamax/1.5
     b=2*np.sin(thetacool/2)*earth_radius
     alpha=(np.pi-thetacool)/2
     rangle=np.sqrt(height**2+b**2-2*height*b*np.cos(np.pi-alpha))

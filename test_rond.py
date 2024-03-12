@@ -48,4 +48,4 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
         plt.show()
 
 
-test_solve_3D_random(n_tests=5, k_means=False, fix_seed=False, verbose=True)
+test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=True)

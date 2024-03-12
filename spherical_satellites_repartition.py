@@ -5,7 +5,7 @@ import math
 from scipy.spatial.distance import cdist
 
 
-def spherical_satellites_repartition(cities_coordinates, cities_weights, height=4, verbose=False):
+def spherical_satellites_repartition_old(cities_coordinates, cities_weights, height=4, verbose=False):
     num_cities = cities_coordinates.shape[0]
 
     earth_radius = 50
@@ -25,12 +25,8 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     z_grid = (sphere_center[2] + satellite_radius * np.cos(phi)).flatten()
 
     # Create a matrix for distances
-    # grid_points = np.array(np.meshgrid(np.arange(grid_size + 1), np.arange(grid_size + 1))).T.reshape(-1, 2)
     grid_points = np.column_stack((x_grid, y_grid, z_grid))
-
     distances_matrix = cdist(cities_coordinates, grid_points)
-
-    # distances_matrix = np.sqrt(np.square(distances_matrix) + np.square(height)) # sqrt(x^2 + y^2 + height^2)
     inv_squared_distances_matrix = 1 / (4 * math.pi * np.square(distances_matrix))
 
     # Variables
@@ -54,6 +50,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         constraints.append(how_many_times_covered[i] == cp.sum(satellite_positions[indices_within_scope[i]]))
         constraints.append(city_covered[i] >= how_many_times_covered[i] / (len(theta) * len(phi)))
         constraints.append(city_covered[i] <= how_many_times_covered[i])
+    #constraints.append(inv_squared_distances_matrix @ satellite_positions >= np.full(num_cities, 1e-3))
 
     # Solve
     problem = cp.Problem(objective, constraints)
@@ -82,8 +79,95 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         print("Coordonnées des satellites (theta, phi)")
         print(coords)
 
-    """coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
-    print("Positions optimales des satellites")
-    print(coords_avec_rayon)"""
+    return coords
+
+def spherical_satellites_repartition(cities_coordinates, cities_weights, height=4, verbose=False):
+    num_cities = cities_coordinates.shape[0]
+
+    earth_radius = 50
+    scope = fm.find_x(height, earth_radius)
+    satellite_radius = earth_radius + height
+    sphere_center = (0, 0, 0)
+
+    theta_values = np.linspace(0, 2 * np.pi, 20)[1:]
+    phi_values = np.linspace(0, np.pi, 20)[1:-1]
+
+    # Create 2D arrays for theta and phi
+    phi, theta = np.meshgrid(phi_values, theta_values)
+
+    # Calculate x, y, and z coordinates using vectorized operations
+    x_grid = (sphere_center[0] + satellite_radius * np.sin(phi) * np.cos(theta)).flatten()
+    y_grid = (sphere_center[1] + satellite_radius * np.sin(phi) * np.sin(theta)).flatten()
+    z_grid = (sphere_center[2] + satellite_radius * np.cos(phi)).flatten()
+
+    # Create a matrix for distances
+    grid_points = np.column_stack((x_grid, y_grid, z_grid))
+    distances_matrix = cdist(cities_coordinates, grid_points)
+    print(distances_matrix)
+    inv_squared_distances_matrix = fm.I(distances_matrix)#1 / (np.square(distances_matrix))
+    print(inv_squared_distances_matrix)
+
+    # Variables
+    satellite_positions = cp.Variable(len(theta_values) * len(phi_values), boolean=True)
+    enough_intensity = cp.Variable(num_cities, boolean=True)
+
+    # Objective
+    objective = cp.Minimize(cp.sum(satellite_positions))
+    # objective = cp.Maximize(cp.sum(how_many_times_covered))
+
+    indices_within_scope = [
+        np.where(distances_matrix[i] <= scope)[0] for i in range(num_cities)
+    ]
+
+    # Constraints
+    constraints = []
+    min_intensity = fm.inten_min(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height) 
+    print(min_intensity)
+
+    constraints.append((enough_intensity @ cities_weights) >= 0.8)
+    """for i in range(num_cities):
+        intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]])
+        constraints.append(intensity - min_intensity >= 1000*(enough_intensity[i]-1))
+        constraints.append(min_intensity - intensity >= -1000*enough_intensity[i])"""
+
+    for i in range(num_cities):
+        intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]])
+        constraints.append(enough_intensity[i] <= intensity/min_intensity)
+        constraints.append(min_intensity - intensity >= -1000000*enough_intensity[i])
+        
+
+    # Solve
+    problem = cp.Problem(objective, constraints)
+    problem.solve(solver=cp.GLPK_MI, warm_start=True)
+    solution_matrix = satellite_positions.value.astype(int).reshape(len(theta_values), len(phi_values))
+
+    where = np.argwhere(solution_matrix == 1)
+
+    coords = np.array((theta_values[where[:, 0]], phi_values[where[:, 1]])).T
+
+    if verbose:
+        print("Part de la population ayant accès au réseau")
+        print(cp.sum(enough_intensity @ cities_weights).value)
+        print("Positions des satellites")
+        print(satellite_positions.value)
+        print("Couverture acceptable")
+        print(enough_intensity.value)
+        print("Valeur de l'objectif (nombre de satellites minimum)")
+        print(problem.value)
+        cities_intensity = []
+        for i in range(num_cities):
+            cities_intensity.append(cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]]).value)
+        print("Intensités des villes")
+        print(cities_intensity)
+        #print((inv_squared_distances_matrix @ satellite_positions).value)
+        print("Solution matrix")
+        print(solution_matrix)
+        print("Coordonnées des satellites (theta, phi)")
+        print(coords)
+        for i in range(num_cities):
+            intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]]).value
+            print("Ville", i)
+            print("Contrainte 1 :",intensity - min_intensity ,">=",-1000*(1-enough_intensity.value[i]))
+            print("Contrainte 2 :",min_intensity - intensity,">=",-1000*enough_intensity.value[i])
 
     return coords

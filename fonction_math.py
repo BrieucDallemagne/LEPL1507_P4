@@ -130,33 +130,6 @@ def create_weight(n_cities):
     poids[0] = poids[0] + diff
     return poids
 
-
-
-
-def plot_covering_3D(cities_coordinates, satellites_coordinates):
-    # Extraire les coordonnées x et y des points
-    x_coords, y_coords, z_coords = zip(*cities_coordinates)
-
-    # Tracer les points
-    for x_coord, y_coord in zip(x_coords, y_coords):
-        plt.scatter(x_coord, y_coord,
-                    color='green' if is_covered_3D(np.array([x_coord, y_coord]), satellites_coordinates) else 'red',
-                    marker='o')
-
-    # Tracer les cercles
-    for center, radius in zip(satellites_coordinates[:, :2],
-                              np.sqrt(satellites_coordinates[:, 3] ** 2 - satellites_coordinates[:, 2] ** 2)):
-        circle = Circle(center, radius, edgecolor='blue', facecolor='none')
-        plt.gca().add_patch(circle)
-
-    plt.title('Network coverage')
-    plt.xlabel('Coordonnée X')
-    plt.ylabel('Coordonnée Y')
-    plt.axis('equal')
-
-    plt.show()
-
-
 def is_covered_2D(city_coords, satellites_coords):
     """
     Check whether or not the city is covered by at least one satellite
@@ -179,31 +152,6 @@ def distance_angulaire(lat1, lon1, lat2, lon2):
     a=np.array([np.cos(lat1)*np.cos(lon1),np.cos(lat1)*np.sin(lon1),np.sin(lat1)])
     b=np.array([np.cos(lat2)*np.cos(lon2),np.cos(lat2)*np.sin(lon2),np.sin(lat2)])
     return np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))
-
-def haversine(coord1, coord2):
-    """
-    Calculate the great circle distance between two points
-    on the earth (specified in decimal degrees)
-
-    Parameters:
-    - coord1 (numpy array): A tuple containing the latitude and longitude of the first point.
-    - coord2 (numpy array): A tuple containing the latitude and longitude of the second point.
-
-    Returns:
-    float: The distance between the two points in kilometers.
-    """
-    # convert decimal degrees to radians
-    lat1, lon1 = coord1
-    lat2, lon2 = coord2
-    lon1, lat1, lon2, lat2 = map(math.radians, [lon1, lat1, lon2, lat2])
-
-    # haversine formula
-    dlon = lon2 - lon1
-    dlat = lat2 - lat1
-    a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
-    c = 2 * math.asin(math.sqrt(a))
-    r = 6371  # Radius of earth in kilometers. Use 3956 for miles
-    return c * r
 
 def k_means_cities(cities_coordinates, k, cities_weights):
     """

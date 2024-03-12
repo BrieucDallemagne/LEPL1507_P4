@@ -2,6 +2,10 @@ import test_plat as fm
 import time
 import matplotlib.pyplot as plt
 import matplotlib.style as mplstyle
+import spherical_satellites_repartition as ssr
+import numpy as np
+from time import perf_counter
+
 mplstyle.use('fast')
 mplstyle.use(['dark_background', 'ggplot', 'fast'])
 "un max de points"
@@ -12,9 +16,9 @@ def test_performance(list, x, y, save, test_type, xscale = 'log'):
     perf = []
     for i in list:
 
-        if test_type == "n_cities":
+        if test_type == "n":
             start = time.perf_counter()
-            fm.test_solve_2D_random(n_cities=i)
+            fm.test_solve_2D_random(n=i)
             end = time.perf_counter()
         elif test_type == "scope":
             start = time.perf_counter()
@@ -38,7 +42,48 @@ def test_performance(list, x, y, save, test_type, xscale = 'log'):
     plt.savefig(save+'.png')
     plt.show()
 
+def plot_complexity_solver():
+    N = [i for i in range(40, 1000, 40)]
+    perf = []
+    for n in N:
+        t = 0
+        for i in range(10):
+            cities_weights = np.full(n, 1/n)
+            radius_earth = 50
 
-test_performance(cities_size_list, "Nombre de villes", "Temps (s)", "performance_villes", "n_cities")
+            cities_coordinates_latitude = np.linspace(-90, 90, n)
+            cities_coordinates_longitude = np.linspace(-180, 180, n)
+            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
+
+            cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in cities_coordinates]
+            cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
+            cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
+            cities_coordinates = np.c_[cities_x, cities_y, cities_z]
+            original_cities = cities_coordinates
+            original_weights = cities_weights
+            start = time.perf_counter()
+            ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=False)
+            end = time.perf_counter()
+            t+= end - start
+
+        print(t/10)
+        perf.append(t/10)
+
+    plt.figure()
+    plt.plot(N, perf, 'o-', label = "Temps d'exécution", color='navy', markersize=2)
+    plt.grid(True, ls = '--', lw = 0.5)
+    plt.xlabel("Nombre de villes")
+    plt.ylabel("Temps (s)")
+    plt.show()
+    plt.savefig('performance_solver.pdf')
+
+
+    return
+
+
+
+
+#test_performance(cities_size_list, "Nombre de villes", "Temps (s)", "performance_villes", "n")
 #test_performance(scope_size_list,  "Portée", "Temps (s)", "performance_portee", "scope")
 #test_performance(grd_size_list, "Taille de la grille", "Temps (s)", "performance_grille", "grid_size")
+plot_complexity_solver()

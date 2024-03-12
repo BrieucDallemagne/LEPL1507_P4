@@ -85,9 +85,9 @@ def big_test():
     plt.show()
 
 
-test_solve_2D_random()
+#test_solve_2D_random()
 
-test_special_cases()
+#test_special_cases()
 
 #big_test()
 

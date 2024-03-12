@@ -18,9 +18,20 @@ def is_covered_3D(city_coords, satellites_coords, scope):
             return True
     return False
 
+def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope):
+    print(min_intensity)
+    total_intensity = 0
+    for satellite_coords in satellites_coords:
+        city_satellite_distance = math.sqrt(
+            (city_coords[0] - satellite_coords[0]) ** 2 + (city_coords[1] - satellite_coords[1]) ** 2 + (city_coords[2] - satellite_coords[2]) ** 2)
+        if city_satellite_distance <= scope:
+            total_intensity += fm.I(city_satellite_distance)
+    return total_intensity >= min_intensity
+
 
 def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, original_cities_coordinates=np.array(0), original_cities_weights=np.array(0), kmeans=False,rot=False):
     sphere_center = (0, 0, 0)
+    earth_radius = 50
 
     # Créer le plot en 3D
     fig = plt.figure()
@@ -77,7 +88,10 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     for x_city, y_city, z_city in cities_coordinates:
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
         # print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
-        ax.scatter(x_city, y_city, z_city, c='green' if is_covered else "red", s=20, marker='o')
+        ax.scatter(x_city, y_city, z_city, c='green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else
+                                            "orange" if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else
+                                            "yellow" if not is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else 
+                                            "red", s=20, marker='o')
     i = 0
     if kmeans:
         for x_city, y_city, z_city in original_cities_coordinates:

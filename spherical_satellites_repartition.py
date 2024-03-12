@@ -159,10 +159,5 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         print(solution_matrix)
         print("Coordonnées des satellites (theta, phi)")
         print(coords)
-        for i in range(num_cities):
-            intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]]).value
-            print("Ville", i)
-            print("Contrainte 1 :",intensity - min_intensity ,">=",-1000*(1-enough_intensity.value[i]))
-            print("Contrainte 2 :",min_intensity - intensity,">=",-1000*enough_intensity.value[i])
 
     return coords

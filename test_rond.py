@@ -44,8 +44,8 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
         if k_means:
             pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, original_cities, original_weights, kmeans= True, rot=False )
         else:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10,  original_cities, original_weights, kmeans= False,rot= True)
+            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10,  original_cities, original_weights, kmeans= False,rot= False)
         plt.show()
 
 
-test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=True)
+test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=False)

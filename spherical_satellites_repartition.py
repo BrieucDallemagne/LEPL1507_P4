@@ -103,9 +103,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     # Create a matrix for distances
     grid_points = np.column_stack((x_grid, y_grid, z_grid))
     distances_matrix = cdist(cities_coordinates, grid_points)
-    print(distances_matrix)
-    inv_squared_distances_matrix = fm.I(distances_matrix)#1 / (np.square(distances_matrix))
-    print(inv_squared_distances_matrix)
+    inv_squared_distances_matrix = fm.I(distances_matrix)#1 / (np.square(distances_matrix))    
 
     # Variables
     satellite_positions = cp.Variable(len(theta_values) * len(phi_values), boolean=True)
@@ -122,7 +120,6 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     # Constraints
     constraints = []
     min_intensity = fm.inten_min(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height) 
-    if verbose : print(min_intensity)
 
     constraints.append((enough_intensity @ cities_weights) >= 0.8)
     for i in range(num_cities):

@@ -122,14 +122,9 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     # Constraints
     constraints = []
     min_intensity = fm.inten_min(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height) 
-    print(min_intensity)
+    if verbose : print(min_intensity)
 
     constraints.append((enough_intensity @ cities_weights) >= 0.8)
-    """for i in range(num_cities):
-        intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]])
-        constraints.append(intensity - min_intensity >= 1000*(enough_intensity[i]-1))
-        constraints.append(min_intensity - intensity >= -1000*enough_intensity[i])"""
-
     for i in range(num_cities):
         intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]])
         constraints.append(enough_intensity[i] <= intensity/min_intensity)

@@ -135,12 +135,12 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     plotter.set_background('black')
     earth_mesh = pv.examples.planets.load_earth()
     earth_mesh.points *= earth_radius
-    texture = pv.read_texture("LEPL1507_P4\Planet_Images\earth.jpg")
+    texture = pv.read_texture("Planet_Images\earth.jpg")
     plotter.add_mesh(earth_mesh, texture=texture)
 
     # Autre planète (facultatif)
     second_mesh = pv.examples.planets.load_earth()
-    second_texture = pv.read_texture("LEPL1507_P4\Planet_Images\sun.jpg")
+    second_texture = pv.read_texture("Planet_Images\sun.jpg")
     second_mesh.points = 300*second_mesh.points + np.array([1000, 1000, 1000])
     second_mesh.rotate_x(135)
     second_mesh.rotate_y(45)

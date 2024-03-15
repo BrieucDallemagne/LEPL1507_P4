@@ -5,10 +5,9 @@ import matplotlib.style as mplstyle
 import spherical_satellites_repartition as ssr
 import numpy as np
 from time import perf_counter
+import seaborn as sns
+sns.set_theme()
 
-mplstyle.use('fast')
-mplstyle.use(['dark_background', 'ggplot', 'fast'])
-"un max de points"
 scope_size_list = [100, 200, 300, 500, 1000,3000, 5000]
 cities_size_list = [2, 5, 10, 20, 50, 100]
 grd_size_list = [10, 50, 100, 300, 500, 750, 1000]
@@ -46,8 +45,9 @@ def plot_complexity_solver():
     N = [i for i in range(40, 1000, 40)]
     perf = []
     for n in N:
-        t = 0
-        for i in range(10):
+        print(n)
+        t = [0, 0, 0]
+        for i in range(3):
             cities_weights = np.full(n, 1/n)
             radius_earth = 50
 
@@ -59,15 +59,11 @@ def plot_complexity_solver():
             cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
             cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
             cities_coordinates = np.c_[cities_x, cities_y, cities_z]
-            original_cities = cities_coordinates
-            original_weights = cities_weights
             start = time.perf_counter()
             ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=False)
             end = time.perf_counter()
-            t+= end - start
-
-        print(t/10)
-        perf.append(t/10)
+            t[i] = end - start
+        perf.append(np.min(t))
 
     plt.figure()
     plt.plot(N, perf, 'o-', label = "Temps d'exécution", color='navy', markersize=2)
@@ -76,9 +72,6 @@ def plot_complexity_solver():
     plt.ylabel("Temps (s)")
     plt.show()
     plt.savefig('performance_solver.pdf')
-
-
-    return
 
 
 

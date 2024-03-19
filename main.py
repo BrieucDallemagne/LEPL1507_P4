@@ -1,15 +1,20 @@
+import tkinter as tk
+from tkinter import messagebox
+from PIL import ImageTk, Image
+import numpy as np
+import matplotlib.pyplot as plt
 import spherical_satellites_repartition as ssr
 import euclidean_satellites_repartition as esr
 import plot_plat as pp
-import numpy as np
-import matplotlib.pyplot as plt
-import random
-import fonction_math as fm
 import plot_rond as pr
-import math
-import matplotlib
-import tkinter as tk
-from tkinter import messagebox
+import fonction_math as fm
+
+def on_resize(event):
+    global background_image, image_label
+    # Redimensionner l'image pour correspondre à la taille du canvas
+    resized_image = original_image.resize((event.width, event.height), Image.ANTIALIAS)
+    background_image = ImageTk.PhotoImage(resized_image)
+    canvas.itemconfig(image_label, image=background_image)
 
 def choisir_mode():
     mode = mode_var.get()
@@ -18,91 +23,124 @@ def choisir_mode():
     verbose = verbose_var.get()
     rot = rot_var.get()
 
+    if num_villes <= 0:
+        messagebox.showerror("Erreur", "Le nombre de villes doit être supérieur à zéro.")
+        return
+
     if mode == "Plat":
-        grid_size = random.randint(10, 100)
-        n_cities = num_villes
-        poids = fm.create_weight(n_cities)
-        height = random.randint(1, 10)
-        scope = random.randint(height, 20)
+        grid_size = np.random.randint(10, 100)
+        poids = fm.create_weight(num_villes)
+        height = np.random.randint(1, 10)
+        scope = np.random.randint(height, 20)
         radius = np.sqrt(scope**2 - height**2)
 
-        cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
+        cities_coordinates = np.random.randint(0, grid_size, size=(num_villes, 2))
         nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
         number_of_satellites = nbr_max_sat
-        satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
+        satellites_coordinates = esr.euclidean_satellites_repartition(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
         pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
         plt.show()
     elif mode == "Sphérique":
-        n_cities = num_villes
-        cities_weights = np.full(n_cities, 1/n_cities)
-        radius_earth = 50
-
-        cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))
-        cities_coordinates_longitude = np.random.randint(-180, 180, size=(n_cities))
+        cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
+        cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
         cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
+        cities_weights = np.full(num_villes, 1/num_villes)
 
+        radius_earth = 50
         cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in cities_coordinates]
         cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
         cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
         cities_coordinates = np.c_[cities_x, cities_y, cities_z]
+
         original_cities = cities_coordinates
         original_weights = cities_weights
+
         if kmeans:
-            cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, n_cities//2, cities_weights)
-        number_of_satellites = np.random.randint(1, n_cities)
+            cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, num_villes//2, cities_weights)
+
+        number_of_satellites = np.random.randint(1, num_villes)
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
-        if np.array_equal(satellites_coordinates, np.array([])):
-            messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé")
+        
+        if satellites_coordinates.size == 0:
+            messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé.")
             return
-        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans= kmeans,rot= rot)
+
+        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans=kmeans, rot=rot)
         plt.show()
 
 def creer_interface():
-    global mode_var, villes_entry, kmeans_var, verbose_var, rot_var
+    global mode_var, villes_entry, kmeans_var, verbose_var, rot_var, canvas, original_image, background_image, image_label
 
     fenetre = tk.Tk()
     fenetre.title("Choix du Mode et du Nombre de Villes")
     
     # Définition de la taille de la fenêtre
-    fenetre.geometry("450x250")  # Largeur x Hauteur
+    fenetre.geometry("450x300")  # Largeur x Hauteur
 
-    mode_label = tk.Label(fenetre, text="Choisissez le mode:")
-    mode_label.pack()
+    # Charger l'image d'arrière-plan
+    original_image = Image.open("Planet_Images/Remacle.png")
+    original_image = original_image.resize((450, 300), Image.ANTIALIAS)
+    background_image = ImageTk.PhotoImage(original_image)
+
+    # Créer un canvas pour afficher l'image
+    canvas = tk.Canvas(fenetre, width=450, height=300)
+    canvas.pack(fill="both", expand=True)
+    image_label = canvas.create_image(0, 0, image=background_image, anchor="nw")
+
+    # Liens pour redimensionner l'image en cas de redimensionnement de la fenêtre
+    canvas.bind("<Configure>", on_resize)
+
+    # Couleurs
+    couleur_texte = "#FFFFFF"
+
+    # Titre
+    titre_label = tk.Label(canvas, text="Sélection des paramètres", bg="black", fg=couleur_texte)
+    titre_label.place(relx=0.5, rely=0.1, anchor="center")
+
+    # Choix du mode
+    mode_label = tk.Label(canvas, text="Mode:", bg="black", fg=couleur_texte)
+    mode_label.place(relx=0.3, rely=0.3, anchor="center")
 
     mode_var = tk.StringVar()
-    mode_var.set("Sphérique")  # Par défaut, le mode est plat
-    mode_menu = tk.OptionMenu(fenetre, mode_var, "Plat", "Sphérique")
-    mode_menu.pack()
+    mode_var.set("Sphérique")  # Par défaut, le mode est sphérique
+    mode_menu = tk.OptionMenu(canvas, mode_var, "Plat", "Sphérique")
+    mode_menu.config(bg="black", fg=couleur_texte)
+    mode_menu.place(relx=0.7, rely=0.3, anchor="center")
 
-    villes_label = tk.Label(fenetre, text="Nombre de villes:")
-    villes_label.pack()
+    # Nombre de villes
+    villes_label = tk.Label(canvas, text="Nombre de villes:", bg="black", fg=couleur_texte)
+    villes_label.place(relx=0.3, rely=0.4, anchor="center")
 
-    villes_entry = tk.Entry(fenetre)
-    villes_entry.pack()
+    villes_entry = tk.Entry(canvas)
+    villes_entry.place(relx=0.7, rely=0.4, anchor="center")
 
-    kmeans_label = tk.Label(fenetre, text="KMeans:")
-    kmeans_label.pack()
+    # KMeans
+    kmeans_label = tk.Label(canvas, text="KMeans:", bg="black", fg=couleur_texte)
+    kmeans_label.place(relx=0.3, rely=0.5, anchor="center")
 
     kmeans_var = tk.BooleanVar()
-    kmeans_checkbox = tk.Checkbutton(fenetre, text="Activer", variable=kmeans_var)
-    kmeans_checkbox.pack()
+    kmeans_checkbox = tk.Checkbutton(canvas, text="Activer", variable=kmeans_var, bg="black", fg=couleur_texte)
+    kmeans_checkbox.place(relx=0.7, rely=0.5, anchor="center")
 
-    rot_label = tk.Label(fenetre, text="Rotation:")
-    rot_label.pack()
+    # Rotation
+    rot_label = tk.Label(canvas, text="Rotation:", bg="black", fg=couleur_texte)
+    rot_label.place(relx=0.3, rely=0.6, anchor="center")
 
     rot_var = tk.BooleanVar()
-    rot_checkbox = tk.Checkbutton(fenetre, text="Activer", variable=rot_var)
-    rot_checkbox.pack()
+    rot_checkbox = tk.Checkbutton(canvas, text="Activer", variable=rot_var, bg="black", fg=couleur_texte)
+    rot_checkbox.place(relx=0.7, rely=0.6, anchor="center")
 
-    verbose_label = tk.Label(fenetre, text="Verbose:")
-    verbose_label.pack()
+    # Verbose
+    verbose_label = tk.Label(canvas, text="Verbose:", bg="black", fg=couleur_texte)
+    verbose_label.place(relx=0.3, rely=0.7, anchor="center")
 
     verbose_var = tk.BooleanVar()
-    verbose_checkbox = tk.Checkbutton(fenetre, text="Activer", variable=verbose_var)
-    verbose_checkbox.pack()
+    verbose_checkbox = tk.Checkbutton(canvas, text="Activer", variable=verbose_var, bg="black", fg=couleur_texte)
+    verbose_checkbox.place(relx=0.7, rely=0.7, anchor="center")
 
-    bouton_valider = tk.Button(fenetre, text="Valider", command=choisir_mode)
-    bouton_valider.pack()
+    # Bouton de validation
+    bouton_valider = tk.Button(canvas, text="Valider", command=choisir_mode, bg="black", fg=couleur_texte)
+    bouton_valider.place(relx=0.5, rely=0.8, anchor="center")
 
     fenetre.mainloop()
 
@@ -111,5 +149,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

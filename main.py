@@ -12,7 +12,7 @@ import fonction_math as fm
 def on_resize(event):
     global background_image, image_label
     # Redimensionner l'image pour correspondre à la taille du canvas
-    resized_image = original_image.resize((event.width, event.height), Image.ANTIALIAS)
+    resized_image = original_image.resize((event.width, event.height), Image.LANCZOS)
     background_image = ImageTk.PhotoImage(resized_image)
     canvas.itemconfig(image_label, image=background_image)
 
@@ -22,6 +22,7 @@ def choisir_mode():
     kmeans = kmeans_var.get()
     verbose = verbose_var.get()
     rot = rot_var.get()
+    planet_type = planet_var.get()
 
     if num_villes <= 0:
         messagebox.showerror("Erreur", "Le nombre de villes doit être supérieur à zéro.")
@@ -69,17 +70,17 @@ def choisir_mode():
         plt.show()
 
 def creer_interface():
-    global mode_var, villes_entry, kmeans_var, verbose_var, rot_var, canvas, original_image, background_image, image_label
+    global mode_var, villes_entry, kmeans_var, verbose_var, rot_var, canvas, original_image, background_image, image_label, planet_var
 
     fenetre = tk.Tk()
     fenetre.title("Choix du Mode et du Nombre de Villes")
     
     # Définition de la taille de la fenêtre
-    fenetre.geometry("450x300")  # Largeur x Hauteur
+    fenetre.geometry("450x350")  # Largeur x Hauteur
 
     # Charger l'image d'arrière-plan
     original_image = Image.open("Planet_Images/Remacle.png")
-    original_image = original_image.resize((450, 300), Image.ANTIALIAS)
+    original_image = original_image.resize((450, 300), Image.LANCZOS)
     background_image = ImageTk.PhotoImage(original_image)
 
     # Créer un canvas pour afficher l'image
@@ -138,9 +139,19 @@ def creer_interface():
     verbose_checkbox = tk.Checkbutton(canvas, text="Activer", variable=verbose_var, bg="black", fg=couleur_texte)
     verbose_checkbox.place(relx=0.7, rely=0.7, anchor="center")
 
+    # Choix du type de planète
+    planet_label = tk.Label(canvas, text="Type de planète:", bg="black", fg=couleur_texte)
+    planet_label.place(relx=0.3, rely=0.8, anchor="center")
+
+    planet_var = tk.StringVar()
+    planet_var.set("earth")  # Par défaut, Remacle est sélectionné
+    planet_menu = tk.OptionMenu(canvas, planet_var, "earth", "earth_night", "moon", "mars", "Remacle")
+    planet_menu.config(bg="black", fg=couleur_texte)
+    planet_menu.place(relx=0.7, rely=0.8, anchor="center")
+
     # Bouton de validation
     bouton_valider = tk.Button(canvas, text="Valider", command=choisir_mode, bg="black", fg=couleur_texte)
-    bouton_valider.place(relx=0.5, rely=0.8, anchor="center")
+    bouton_valider.place(relx=0.5, rely=0.9, anchor="center")
 
     fenetre.mainloop()
 

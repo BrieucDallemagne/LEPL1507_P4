@@ -11,9 +11,12 @@ import matplotlib
 import tkinter as tk
 from tkinter import messagebox
 
-def choisir_mode(kmeans=False, verbose=False):
+def choisir_mode():
     mode = mode_var.get()
     num_villes = int(villes_entry.get())
+    kmeans = kmeans_var.get()
+    verbose = verbose_var.get()
+    rot = rot_var.get()
 
     if mode == "Plat":
         grid_size = random.randint(10, 100)
@@ -32,7 +35,6 @@ def choisir_mode(kmeans=False, verbose=False):
         plt.show()
     elif mode == "Sphérique":
         n_cities = num_villes
-        #cities_weights = fm.create_weight(n_cities)
         cities_weights = np.full(n_cities, 1/n_cities)
         radius_earth = 50
 
@@ -46,18 +48,25 @@ def choisir_mode(kmeans=False, verbose=False):
         cities_coordinates = np.c_[cities_x, cities_y, cities_z]
         original_cities = cities_coordinates
         original_weights = cities_weights
+        if kmeans:
+            cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, n_cities//2, cities_weights)
+        #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
-        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10,  original_cities, original_weights, kmeans= False,rot= False)
+        if np.array_equal(satellites_coordinates, np.array([])):
+            messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé")
+            return
+        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10,  original_cities, original_weights, kmeans= kmeans,rot= rot)
         plt.show()
 
 def creer_interface():
-    global mode_var, villes_entry
+    global mode_var, villes_entry, kmeans_var, verbose_var, rot_var
 
     fenetre = tk.Tk()
     fenetre.title("Choix du Mode et du Nombre de Villes")
-
-    fenetre.geometry("400x200") 
+    
+    # Définition de la taille de la fenêtre
+    fenetre.geometry("450x250")  # Largeur x Hauteur
 
     mode_label = tk.Label(fenetre, text="Choisissez le mode:")
     mode_label.pack()
@@ -72,6 +81,27 @@ def creer_interface():
 
     villes_entry = tk.Entry(fenetre)
     villes_entry.pack()
+
+    kmeans_label = tk.Label(fenetre, text="KMeans:")
+    kmeans_label.pack()
+
+    kmeans_var = tk.BooleanVar()
+    kmeans_checkbox = tk.Checkbutton(fenetre, text="Activer", variable=kmeans_var)
+    kmeans_checkbox.pack()
+
+    rot_label = tk.Label(fenetre, text="Rotation:")
+    rot_label.pack()
+
+    rot_var = tk.BooleanVar()
+    rot_checkbox = tk.Checkbutton(fenetre, text="Activer", variable=rot_var)
+    rot_checkbox.pack()
+
+    verbose_label = tk.Label(fenetre, text="Verbose:")
+    verbose_label.pack()
+
+    verbose_var = tk.BooleanVar()
+    verbose_checkbox = tk.Checkbutton(fenetre, text="Activer", variable=verbose_var)
+    verbose_checkbox.pack()
 
     bouton_valider = tk.Button(fenetre, text="Valider", command=choisir_mode)
     bouton_valider.pack()

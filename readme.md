@@ -7,5 +7,5 @@ https://www.overleaf.com/project/65c1ec287aeb297541c5cbeb
 
 # comment run le projet :
 
-lancez le commande ```sh .\run.sh``` dans le terminal depuis la root du projet
+lancez la commande ```python ./main.py``` dans le terminal depuis la root du projet
 

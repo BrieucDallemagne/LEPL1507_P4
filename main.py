@@ -37,7 +37,7 @@ def choisir_mode():
         cities_coordinates = np.random.randint(0, grid_size, size=(num_villes, 2))
         nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
         number_of_satellites = nbr_max_sat
-        satellites_coordinates = esr.euclidean_satellites_repartition(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
+        satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
         pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
         plt.show()
     elif mode == "Sphérique":

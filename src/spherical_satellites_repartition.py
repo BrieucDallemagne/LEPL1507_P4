@@ -1,4 +1,4 @@
-import fonction_math as fm
+import src.fonction_math as fm
 import numpy as np
 import cvxpy as cp
 import math

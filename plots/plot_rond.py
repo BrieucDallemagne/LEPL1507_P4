@@ -1,8 +1,8 @@
-import spherical_satellites_repartition as ssr
+import src.spherical_satellites_repartition as ssr
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import fonction_math as fm
+import src.fonction_math as fm
 import math
 from matplotlib import animation
 import pyvista as pv

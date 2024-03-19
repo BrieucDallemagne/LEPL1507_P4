@@ -1,13 +1,18 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageTk, Image
 import numpy as np
 import matplotlib.pyplot as plt
-import spherical_satellites_repartition as ssr
-import euclidean_satellites_repartition as esr
-import plot_plat as pp
-import plot_rond as pr
-import fonction_math as fm
+import src.spherical_satellites_repartition as ssr
+import src.euclidean_satellites_repartition as esr
+
+import plots.plot_plat as pp
+import plots.plot_rond as pr
+import src.fonction_math as fm
 
 def on_resize(event):
     global background_image, image_label

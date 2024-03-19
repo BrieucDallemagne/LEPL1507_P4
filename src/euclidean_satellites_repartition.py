@@ -1,4 +1,4 @@
-import fonction_math as fm
+import src.fonction_math as fm
 import math
 import numpy as np
 import matplotlib.pyplot as plt

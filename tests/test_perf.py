@@ -1,8 +1,12 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import test_plat as fm
 import time
 import matplotlib.pyplot as plt
 import matplotlib.style as mplstyle
-import spherical_satellites_repartition as ssr
+import src.spherical_satellites_repartition as ssr
 import numpy as np
 from time import perf_counter
 import seaborn as sns
@@ -69,7 +73,7 @@ def plot_complexity_solver():
     plt.xlabel("Nombre de villes")
     plt.ylabel("Temps (s)")
     plt.show()
-    plt.savefig('performance_solver.pdf')
+    plt.savefig('résultats/performance_solver.pdf')
 
 
 

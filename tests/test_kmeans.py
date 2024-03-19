@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-import fonction_math as fm
+import src.fonction_math as fm
 import numpy as np
 import pyvista as pv
-from plot_rond import plot_3D
+from plots.plot_rond import plot_3D
 
 def plot_centroids_and_cities(cities_coordinates, cities_weights, new_centroids, centroids_weight):
     fig, ax = plt.subplots()

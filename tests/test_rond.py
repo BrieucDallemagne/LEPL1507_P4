@@ -1,10 +1,14 @@
-import spherical_satellites_repartition as ssr
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import src.spherical_satellites_repartition as ssr
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 from mpl_toolkits.mplot3d import Axes3D
-import fonction_math as fm
-import plot_rond as pr
+import src.fonction_math as fm
+import plots.plot_rond as pr
 import math
 import matplotlib
 
@@ -29,7 +33,6 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
         og_cit = np.array(0)
         og_weights = np.array(0)
         if k_means:
-            print("hey")
             cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
             cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in
                         cities_coordinates]

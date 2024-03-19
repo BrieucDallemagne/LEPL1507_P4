@@ -1,9 +1,13 @@
-import euclidean_satellites_repartition as esr
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+import src.euclidean_satellites_repartition as esr
 import numpy as np
 import matplotlib.pyplot as plt
-import fonction_math as fm
-import euclidean_satellites_repartition as esr
-import plot_plat as pp
+import src.fonction_math as fm
+import src.euclidean_satellites_repartition as esr
+import plots.plot_plat as pp
 import random
 
 
@@ -82,7 +86,7 @@ def big_test():
     pp.plot_covering_2D(cities, poids, satellites, grid_size)
     plt.show()
 
-#test_solve_2D_random()
+test_solve_2D_random()
 
 #test_special_cases()
 

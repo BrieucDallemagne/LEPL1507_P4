@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import fonction_math as fm
+import src.fonction_math as fm
 from matplotlib.patches import Circle
 
 def mapping(cities_coordinates, max_grid_size):

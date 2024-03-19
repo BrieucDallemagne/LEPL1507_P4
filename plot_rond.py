@@ -133,7 +133,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
 
     # Créer le plot en 3D
     plotter = pv.Plotter()
-    plotter.set_background('white')
+    plotter.set_background('black')
     earth_mesh = pv.examples.planets.load_earth()
     earth_mesh.points *= earth_radius
     texture = pv.read_texture("Planet_Images\earth.jpg")

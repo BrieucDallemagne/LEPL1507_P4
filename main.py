@@ -56,7 +56,7 @@ def choisir_mode():
         if np.array_equal(satellites_coordinates, np.array([])):
             messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé")
             return
-        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10,  original_cities, original_weights, kmeans= kmeans,rot= rot)
+        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans= kmeans,rot= rot)
         plt.show()
 
 def creer_interface():

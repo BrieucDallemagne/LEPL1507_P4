@@ -46,7 +46,6 @@ def solve_2D_v1(N_satellites, cities_coordinates, cities_weights, grid_size = 10
 
 
     # Results
-    print("Optimal satellite positions:")
     coords = np.argwhere(solution_matrix == 1)
     for city_coordinates in cities_coordinates:
         if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1 or solution_matrix[city_coordinates[0], city_coordinates[1]] == 3):
@@ -54,9 +53,6 @@ def solve_2D_v1(N_satellites, cities_coordinates, cities_weights, grid_size = 10
         else:
             solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
 
-    
-
-    print(solution_matrix)
     
     coords_avec_colonne = np.c_[coords, np.full((len(coords), 1), radius)]
 
@@ -151,17 +147,12 @@ def solve_2D_v2(N_satellites, cities_coordinates, cities_weights, grid_size = 10
 
 
     # Results
-    print("Optimal satellite positions:")
     coords = np.argwhere(solution_matrix == 1)
     for city_coordinates in cities_coordinates:
         if (solution_matrix[city_coordinates[0], city_coordinates[1]] == 1 or solution_matrix[city_coordinates[0], city_coordinates[1]] == 3):
             solution_matrix[city_coordinates[0], city_coordinates[1]] = 3
         else:
             solution_matrix[city_coordinates[0], city_coordinates[1]] = 2
-
-    
-
-    print(solution_matrix)
     
     coords_avec_colonne = np.c_[coords, np.full((len(coords), 1), radius)]
 

@@ -54,8 +54,6 @@ def is_covered_3D(city_coords, satellites_coords):
         surface_radius = math.sqrt(satellite_coords[3] ** 2 - satellite_coords[2] ** 2)  # Pythagora sqrt(r^2 - h^2)
         city_satellite_distance = math.sqrt(
             (city_coords[0] - satellite_coords[0]) ** 2 + (city_coords[1] - satellite_coords[1]) ** 2)
-        # print(surface_radius)
-        # print(city_satellite_distance)
         if surface_radius >= city_satellite_distance:
             return True
     return False

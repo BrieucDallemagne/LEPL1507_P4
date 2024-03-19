@@ -20,7 +20,6 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
             cities_coordinates_longitude = [0, 30, 60, 90, 120]
         else:
             n_cities = np.random.randint(5, 100)
-            print("Test avec", n_cities, "villes")
             #cities_weights = fm.create_weight(n_cities)
             cities_weights = np.full(n_cities, 1/n_cities)
             radius_earth = 50
@@ -37,7 +36,6 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
         original_weights = cities_weights
         if k_means:
             cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, n_cities//2, cities_weights)
-        #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
         if np.array_equal(satellites_coordinates, np.array([])):

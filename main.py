@@ -29,7 +29,6 @@ def choisir_mode():
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
         nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
         number_of_satellites = nbr_max_sat
-        print('nombres de satellites optimal :', nbr_max_sat)
         satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
         pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
         plt.show()
@@ -50,7 +49,6 @@ def choisir_mode():
         original_weights = cities_weights
         if kmeans:
             cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, n_cities//2, cities_weights)
-        #print(cities_coordinates)
         number_of_satellites = np.random.randint(1, n_cities)
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
         if np.array_equal(satellites_coordinates, np.array([])):

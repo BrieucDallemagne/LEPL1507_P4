@@ -45,23 +45,10 @@ def euclidean_satellites_répartition(N_satellites, cities_coordinates, cities_w
 
     if problem.status != cp.OPTIMAL:
         raise Exception("The problem is not solvable")
-
-    # Results
-    print("Part de la population ayant accès au réseau")
-    print(cp.sum(city_covered @ cities_weights).value)
-    print("Positions des satellites")
-    print(satellite_positions.value)
-    print("Villes couvertes")
-    print(city_covered.value)
-    print("Valeur de l'objectif")
-    print(problem.value)
-    print("Nombre de fois où chaque ville est couverte:")
-    print(how_many_times_covered.value)
+    
     solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
     coords = np.argwhere(solution_matrix == 1)
     coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
-    print("Positions optimales des satellites:")
-    print(coords_avec_rayon)
 
     return coords_avec_rayon
 

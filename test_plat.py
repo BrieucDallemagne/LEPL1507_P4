@@ -19,7 +19,6 @@ def test_solve_2D_random( n_tests=10):
         cities_coordinates = np.random.randint(0, grid_size, size=(n_cities, 2))
         nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
         number_of_satellites = random.randint(1, nbr_max_sat)
-        print('nombres de satellites optimal :', nbr_max_sat)
         satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates, poids, grid_size, scope, height, intensity=1000)
         pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
         plt.show()

@@ -72,12 +72,7 @@ def plot_3D_old(cities_coordinates, satellites_coordinates, cities_weights, heig
         satellites_coordinates[:, 0])
     z_sat = sphere_center[2] + satellite_radius * np.cos(satellites_coordinates[:, 1])
 
-    # print(satellites_coordinates)
-    # print(x_sat)
-    # print(y_sat)
-    # print(z_sat)
     satellites_spherical_coordinates = np.c_[x_sat, y_sat, z_sat]
-    # print(satellites_spherical_coordinates)
 
     ax.scatter(x_sat, y_sat, z_sat, color='blue', s=40, label='Satellites')
     for x_s, y_s, z_s in zip(x_sat, y_sat, z_sat):
@@ -88,7 +83,6 @@ def plot_3D_old(cities_coordinates, satellites_coordinates, cities_weights, heig
 
     for x_city, y_city, z_city in cities_coordinates:
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
-        # print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
         ax.scatter(x_city, y_city, z_city, c='green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else
                                             "orange" if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.inten_min(height, earth_radius, fm.I)[0], scope) else
                                             "red", s=20, marker='o')
@@ -96,7 +90,6 @@ def plot_3D_old(cities_coordinates, satellites_coordinates, cities_weights, heig
     if kmeans:
         for x_city, y_city, z_city in original_cities_coordinates:
             is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
-            # print("City ({}, {}, {}) is covered: {}".format(x_city, y_city, z_city, is_covered))
             ax.scatter(x_city, y_city, z_city, c='pink' if is_covered else "orange", s=20, marker='o')
             ax.text(x_city, y_city, z_city, '%s' % (str(original_cities_weights[i])), size=5, zorder=1,
                     color='k')
@@ -151,16 +144,13 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     # Rayon de la sphère
     satellite_radius = 50 + height
     scope = fm.find_x(height, earth_radius)
-    print(cities_coordinates)
     if kmeans:
         #enlève la coord en z
         coord_en_z = cities_coordinates[:, 2]
-        print(coord_en_z)
         cities_coordinates = fm.supp_3D(cities_coordinates)
         pack = fm.k_means_cities(cities_coordinates, len(cities_coordinates)//2, cities_weights)
         cities_coordinates = fm.adapt_to_3D(pack[0],coord_en_z)
         cities_weights = pack[1]
-        print(cities_coordinates)
     # Dessiner les satellites
     x_sat = sphere_center[0] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.cos(
         satellites_coordinates[:, 0])

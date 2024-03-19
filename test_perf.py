@@ -29,7 +29,6 @@ def test_performance(list, x, y, save, test_type, xscale = 'log'):
             end = time.perf_counter()
         elapsed_time = end - start
         perf.append(elapsed_time)
-        print("Temps consacré pour", i, ":", elapsed_time)
     plt.figure()
     plt.plot(list, perf, 'o-', label = "Temps d'exécution", color='navy')
     plt.xlabel(x)
@@ -45,7 +44,6 @@ def plot_complexity_solver():
     N = [i for i in range(40, 1000, 40)]
     perf = []
     for n in N:
-        print(n)
         t = [0, 0, 0]
         for i in range(3):
             cities_weights = np.full(n, 1/n)

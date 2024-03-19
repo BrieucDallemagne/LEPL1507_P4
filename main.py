@@ -66,7 +66,7 @@ def choisir_mode():
             messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé.")
             return
 
-        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans=kmeans, rot=rot)
+        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans=kmeans, centroids=np.array(0), centroids_weights=np.array(0), rot=rot, planet="earth")
         plt.show()
 
 def creer_interface():
@@ -92,65 +92,65 @@ def creer_interface():
     canvas.bind("<Configure>", on_resize)
 
     # Couleurs
-    couleur_texte = "#FFFFFF"
+    couleur_texte = "#000000"
 
     # Titre
-    titre_label = tk.Label(canvas, text="Sélection des paramètres", bg="black", fg=couleur_texte)
+    titre_label = tk.Label(canvas, text="Sélection des paramètres", bg="white", fg=couleur_texte)
     titre_label.place(relx=0.5, rely=0.1, anchor="center")
 
     # Choix du mode
-    mode_label = tk.Label(canvas, text="Mode:", bg="black", fg=couleur_texte)
+    mode_label = tk.Label(canvas, text="Mode:", bg="white", fg=couleur_texte)
     mode_label.place(relx=0.3, rely=0.3, anchor="center")
 
     mode_var = tk.StringVar()
     mode_var.set("Sphérique")  # Par défaut, le mode est sphérique
     mode_menu = tk.OptionMenu(canvas, mode_var, "Plat", "Sphérique")
-    mode_menu.config(bg="black", fg=couleur_texte)
+    mode_menu.config(bg="white", fg=couleur_texte)
     mode_menu.place(relx=0.7, rely=0.3, anchor="center")
 
     # Nombre de villes
-    villes_label = tk.Label(canvas, text="Nombre de villes:", bg="black", fg=couleur_texte)
+    villes_label = tk.Label(canvas, text="Nombre de villes:", bg="white", fg=couleur_texte)
     villes_label.place(relx=0.3, rely=0.4, anchor="center")
 
     villes_entry = tk.Entry(canvas)
     villes_entry.place(relx=0.7, rely=0.4, anchor="center")
 
     # KMeans
-    kmeans_label = tk.Label(canvas, text="KMeans:", bg="black", fg=couleur_texte)
+    kmeans_label = tk.Label(canvas, text="KMeans:", bg="white", fg=couleur_texte)
     kmeans_label.place(relx=0.3, rely=0.5, anchor="center")
 
     kmeans_var = tk.BooleanVar()
-    kmeans_checkbox = tk.Checkbutton(canvas, text="Activer", variable=kmeans_var, bg="black", fg=couleur_texte)
+    kmeans_checkbox = tk.Checkbutton(canvas, text="Activer", variable=kmeans_var, bg="white", fg=couleur_texte)
     kmeans_checkbox.place(relx=0.7, rely=0.5, anchor="center")
 
     # Rotation
-    rot_label = tk.Label(canvas, text="Rotation:", bg="black", fg=couleur_texte)
+    rot_label = tk.Label(canvas, text="Rotation:", bg="white", fg=couleur_texte)
     rot_label.place(relx=0.3, rely=0.6, anchor="center")
 
     rot_var = tk.BooleanVar()
-    rot_checkbox = tk.Checkbutton(canvas, text="Activer", variable=rot_var, bg="black", fg=couleur_texte)
+    rot_checkbox = tk.Checkbutton(canvas, text="Activer", variable=rot_var, bg="white", fg=couleur_texte)
     rot_checkbox.place(relx=0.7, rely=0.6, anchor="center")
 
     # Verbose
-    verbose_label = tk.Label(canvas, text="Verbose:", bg="black", fg=couleur_texte)
+    verbose_label = tk.Label(canvas, text="Verbose:", bg="white", fg=couleur_texte)
     verbose_label.place(relx=0.3, rely=0.7, anchor="center")
 
     verbose_var = tk.BooleanVar()
-    verbose_checkbox = tk.Checkbutton(canvas, text="Activer", variable=verbose_var, bg="black", fg=couleur_texte)
+    verbose_checkbox = tk.Checkbutton(canvas, text="Activer", variable=verbose_var, bg="white", fg=couleur_texte)
     verbose_checkbox.place(relx=0.7, rely=0.7, anchor="center")
 
     # Choix du type de planète
-    planet_label = tk.Label(canvas, text="Type de planète:", bg="black", fg=couleur_texte)
+    planet_label = tk.Label(canvas, text="Type de planète:", bg="white", fg=couleur_texte)
     planet_label.place(relx=0.3, rely=0.8, anchor="center")
 
     planet_var = tk.StringVar()
     planet_var.set("earth")  # Par défaut, Remacle est sélectionné
     planet_menu = tk.OptionMenu(canvas, planet_var, "earth", "earth_night", "moon", "mars", "Remacle")
-    planet_menu.config(bg="black", fg=couleur_texte)
+    planet_menu.config(bg="white", fg=couleur_texte)
     planet_menu.place(relx=0.7, rely=0.8, anchor="center")
 
     # Bouton de validation
-    bouton_valider = tk.Button(canvas, text="Valider", command=choisir_mode, bg="black", fg=couleur_texte)
+    bouton_valider = tk.Button(canvas, text="Valider", command=choisir_mode, bg="white", fg=couleur_texte)
     bouton_valider.place(relx=0.5, rely=0.9, anchor="center")
 
     fenetre.mainloop()

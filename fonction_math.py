@@ -163,7 +163,7 @@ def k_means_cities(cities_coordinates, k, cities_weights):
     Returns:
 
     """
-    kmeans = KMeans(n_clusters=k )
+    kmeans = KMeans(n_clusters=k, max_iter = 100)
     kmeans.fit(cities_coordinates, cities_weights)
     #retourne les nouveaux poids
     new_weights = np.array([0 for i in range(k)], dtype=float)
@@ -172,6 +172,18 @@ def k_means_cities(cities_coordinates, k, cities_weights):
         new_weights[int(prediction[i])] += cities_weights[i]
     return kmeans.cluster_centers_, new_weights
 
+def adapt_to_3D(cities_en_deux_d, val_array):
+    ret = np.zeros((len(cities_en_deux_d), 3))
+    for i in range(len(cities_en_deux_d)):
+        #ajoute un 0 à chaque sous array: [1,2] devient [1,2,0]
+        ret[i] = np.append(cities_en_deux_d[i], val_array[i])
+    return ret
+
+def supp_3D(cities_en_trois_d):
+    ret = np.zeros((len(cities_en_trois_d), 2))
+    for i in range(len(cities_en_trois_d)):
+        ret[i] = cities_en_trois_d[i][:2]
+    return ret
 #petit test mignon pas du tout à sa place qui plot les villes et les nouveaux centroïdes, et colorie de la même couleur les clustered cities
 def plot_kmeans(cities_coordinates, k, new_centroids):
     plt.scatter(cities_coordinates[:, 0], cities_coordinates[:, 1], c='black')

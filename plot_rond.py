@@ -7,6 +7,7 @@ import math
 from matplotlib import animation
 import pyvista as pv
 
+
 def is_covered_3D(city_coords, satellites_coords, scope):
     """
     Check whether or not the city is covered by at least one satellite
@@ -125,7 +126,7 @@ def plot_3D_old(cities_coordinates, satellites_coordinates, cities_weights, heig
         anim = animation.FuncAnimation(fig, animate, frames=200, interval=100)
     plt.show()
 
-def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, original_cities_coordinates=np.array(0), original_cities_weights=np.array(0), kmeans=False,rot=False):
+def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, original_cities_weights=np.array(0), kmeans=False,rot=False):
     #met le background en blanc
     sphere_center = (0, 0, 0)
     earth_radius = 50
@@ -150,7 +151,16 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     # Rayon de la sphère
     satellite_radius = 50 + height
     scope = fm.find_x(height, earth_radius)
-
+    print(cities_coordinates)
+    if kmeans:
+        #enlève la coord en z
+        coord_en_z = cities_coordinates[:, 2]
+        print(coord_en_z)
+        cities_coordinates = fm.supp_3D(cities_coordinates)
+        pack = fm.k_means_cities(cities_coordinates, len(cities_coordinates)//2, cities_weights)
+        cities_coordinates = fm.adapt_to_3D(pack[0],coord_en_z)
+        cities_weights = pack[1]
+        print(cities_coordinates)
     # Dessiner les satellites
     x_sat = sphere_center[0] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.cos(
         satellites_coordinates[:, 0])
@@ -166,6 +176,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
 
     # Dessiner les villes
     satisfied_proportion = 0
+
     for i, (x_city, y_city, z_city) in enumerate(cities_coordinates):
         is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
         if has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope): satisfied_proportion += cities_weights[i]
@@ -175,12 +186,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
         if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
         plotter.add_mesh(pv.Sphere(radius=earth_radius/15, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
-    if kmeans:
-        for i, (x_city, y_city, z_city) in enumerate(original_cities_coordinates):
-            is_covered = is_covered_3D([x_city, y_city, z_city], satellites_coordinates, scope)
-            color = 'pink' if is_covered else 'orange'
-            plotter.add_mesh(pv.Sphere(radius=1, center=(x_city, y_city, z_city)), color=color, point_size=20)
-            plotter.add_text(str(original_cities_weights[i]), position=(x_city, y_city, z_city), font_size=5)
+
     
     # Position de la caméra
     plotter.camera_position = [(-250, -250, -250), (0, 0, -1), (0, 1, 0)]

@@ -7,7 +7,6 @@ import plot_plat as pp
 import random
 
 
-
 def test_solve_2D_random( n_tests=10):
     for i in range(n_tests):
         grid_size = random.randint(10, 100)
@@ -83,7 +82,6 @@ def big_test():
     satellites = esr.euclidean_satellites_répartition(number_of_satellites, cities, poids, grid_size, scope, height, intensity=1000)
     pp.plot_covering_2D(cities, poids, satellites, grid_size)
     plt.show()
-
 
 #test_solve_2D_random()
 

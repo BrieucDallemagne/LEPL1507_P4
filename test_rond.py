@@ -42,11 +42,9 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
-        if k_means:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, original_cities, original_weights, kmeans= True, rot=False )
-        else:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10,  original_cities, original_weights, kmeans= False,rot= False)
+        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, original_cities, k_means, rot=False)
         plt.show()
 
 
 test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=False)
+test_solve_3D_random(n_tests=1, k_means=True, fix_seed=False, verbose=False)

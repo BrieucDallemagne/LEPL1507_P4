@@ -71,7 +71,7 @@ def choisir_mode():
             messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé.")
             return
 
-        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans=kmeans, centroids=np.array(0), centroids_weights=np.array(0), rot=rot, planet="earth")
+        pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights,  10, kmeans=kmeans, centroids=np.array(0), centroids_weights=np.array(0), rot=rot, planet=planet_type)
         plt.show()
 
 def creer_interface():

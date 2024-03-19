@@ -124,12 +124,23 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     sphere_center = (0, 0, 0)
     earth_radius = 50
 
+    if planet == "moon":
+        image = "Planet_Images\moon.jpg"
+    elif planet == "mars":
+        image = "Planet_Images\mars.jpg"
+    elif planet == "earth_night":
+        image = "Planet_Images\earth_night.jpg"
+    elif planet == "Remacle":
+        image = "Planet_Images\Remacle.png"
+    else:
+        image = "Planet_Images\earth.jpg"
+
     # Créer le plot en 3D
     plotter = pv.Plotter()
     plotter.set_background('black')
     earth_mesh = pv.examples.planets.load_earth()
     earth_mesh.points *= earth_radius
-    texture = pv.read_texture("Planet_Images\earth.jpg")
+    texture = pv.read_texture(image)
     plotter.add_mesh(earth_mesh, texture=texture)
 
     # Autre planète (facultatif)

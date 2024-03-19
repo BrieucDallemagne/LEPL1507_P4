@@ -237,19 +237,6 @@ def plot_3D_old(cities_coordinates, satellites_coordinates, cities_weights, heig
     # Dessiner la sphère
     ax.plot_surface(x, y, z, color='gray', alpha=0.3)
 
-    """# Dessiner le quadrillage
-    theta_values = np.linspace(0, 2 * np.pi, 20)[1:]
-    phi_values = np.linspace(0, np.pi, 20)[1:-1]
-
-    theta, phi = np.meshgrid(theta_values, phi_values)
-    x_grid = sphere_center[0] + satellite_radius * np.sin(phi) * np.cos(theta)
-    y_grid = sphere_center[1] + satellite_radius * np.sin(phi) * np.sin(theta)
-    z_grid = sphere_center[2] + satellite_radius * np.cos(phi)
-
-    ax.plot_wireframe(x_grid, y_grid, z_grid, color='black', linewidth=0.5)
-
-    ax.scatter(x_grid, y_grid, z_grid, color='red', s=10, alpha=0.2)"""
-
     x_sat = sphere_center[0] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.cos(
         satellites_coordinates[:, 0])
     y_sat = sphere_center[1] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.sin(

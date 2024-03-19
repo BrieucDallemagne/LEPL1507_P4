@@ -181,8 +181,8 @@ def plot_kmeans(cities_coordinates, k, new_centroids):
 def find_x(height=4, earth_radius=50):
     return np.sqrt(2 * height * earth_radius + height ** 2)
 
-def I(r) :
-    return 1/r**2
+def I(r,coef=1) :
+    return coef/r**2
 
 def minimum_intensity(height, earth_radius, I) :
     thetamax=np.pi/2-np.arccos(earth_radius/(height+earth_radius))
@@ -192,3 +192,9 @@ def minimum_intensity(height, earth_radius, I) :
     rangle=np.sqrt(height**2+b**2-2*height*b*np.cos(np.pi-alpha))
     Imin=I(rangle)
     return Imin,rangle
+
+def pui_coef(point_satt, city_coordinates, height = 4, earth_radius=50) :
+    delta = point_satt-city_coordinates
+    norm_a = np.linalg.norm(city_coordinates)
+    r = np.linalg.norm(delta)
+    return max(0.0, np.dot(delta,city_coordinates)/norm_a/r)

@@ -11,25 +11,53 @@ import src.fonction_math as fm
 import plots.plot_rond as pr
 import math
 import matplotlib
+import csv
 
 matplotlib.use('TkAgg')
 
-def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = False, planet=False):
+def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose = False, planet=False):
     for i in range(n_tests):
-        if fix_seed:
-            cities_weights = [0.1, 0.1, 0.2, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]
-            radius_earth = 50
-            cities_coordinates_latitude = [0, 45, -45, 0, 80, 12, -26, -60, -15]
-            cities_coordinates_longitude = [0, 30, 90, 120, 85, -157, -76, -34, 170]
-            n_cities = len(cities_coordinates_latitude)
+        if real_cities:
+            n_cities = np.random.randint(5, 10)
+            file = open('worldcities.csv', 'r', encoding='utf-8')
+            csv_reader = csv.DictReader(file)
+
+            longitudes = []
+            latitudes = []
+            populations = []
+            cities_names = []
+            countries_names = []
+            
+            num_rows = sum(1 for row in csv_reader)
+            file.seek(0)
+            random_indices = random.sample(range(num_rows), n_cities)
+
+            for i, row in enumerate(csv_reader):
+                if i in random_indices:
+                    longitudes.append(float(row['lng']))
+                    latitudes.append(float(row['lat']))
+                    populations.append(row['population'])
+                    cities_names.append(row['city'])
+                    countries_names.append(row['country'])
+
+            cities_coordinates_sph = np.array([longitudes, latitudes]).T
+            cities_coordinates_sph[:, 1] = (90 - cities_coordinates_sph[:, 1]) 
+            cities_coordinates = np.radians(cities_coordinates_sph)
+            print("Villes affichées :")
+            for i in range(n_cities):
+                print("{}, {}".format(cities_names[i], countries_names[i]))
+
+
+            cities_weights = np.full(cities_coordinates_sph.shape[0], 1/cities_coordinates_sph.shape[0])
         else:
             n_cities = np.random.randint(5, 100)
             #cities_weights = fm.create_weight(n_cities)
             cities_weights = np.full(n_cities, 1/n_cities)
             radius_earth = 50
 
-            cities_coordinates_latitude = np.random.randint(-90, 90, size=(n_cities))
-            cities_coordinates_longitude = np.random.randint(-180, 180, size=(n_cities))
+            cities_coordinates_latitude = np.radians(np.random.randint(-90, 90, size=(n_cities)))
+            cities_coordinates_longitude = np.radians(np.random.randint(-180, 180, size=(n_cities)))
+            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
         og_cit = np.array(0)
         og_weights = np.array(0)
         if k_means:
@@ -47,12 +75,7 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
             cities_weights = cities_wrap[1]
             cities_coordinates_latitude = cities_long_and_lat[:, 0]
             cities_coordinates_longitude = cities_long_and_lat[:, 1]
-        cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-
-        cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in cities_coordinates]
-        cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in cities_coordinates]
-        cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
-        cities_coordinates = np.c_[cities_x, cities_y, cities_z]
+            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
         satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
@@ -64,5 +87,5 @@ def test_solve_3D_random(n_tests=5, k_means=False, fix_seed = False, verbose = F
         plt.show()
 
 
-test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=False)
-test_solve_3D_random(n_tests=1, k_means=True, fix_seed=False, verbose=False)
+test_solve_3D_random(n_tests=1, k_means=False, real_cities=True, verbose=False)
+

@@ -2,11 +2,12 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import src.fonction_math as fm
+import fonction_math as fm
 import numpy as np
 import cvxpy as cp
 import math
 from scipy.spatial.distance import cdist
+import copy
 
 
 def spherical_satellites_repartition_old(cities_coordinates, cities_weights, height=4, verbose=False):
@@ -86,12 +87,17 @@ def spherical_satellites_repartition_old(cities_coordinates, cities_weights, hei
     return coords
 
 def spherical_satellites_repartition(cities_coordinates, cities_weights, height=4, verbose=False):
+    cities_coordinates = copy.copy(cities_coordinates)
     num_cities = cities_coordinates.shape[0]
+
+    cities_coordinates[:, 0] += np.pi
 
     earth_radius = 50
     scope = fm.find_x(height, earth_radius)
     satellite_radius = earth_radius + height
-    sphere_center = (0, 0, 0)
+    sphere_center = [0, 0, 0]
+
+    cities_coordinates = fm.spherical_to_cartesian(cities_coordinates, sphere_center, earth_radius)
 
     theta_values = np.linspace(0, 2 * np.pi, 20)[1:]
     phi_values = np.linspace(0, np.pi, 20)[1:-1]

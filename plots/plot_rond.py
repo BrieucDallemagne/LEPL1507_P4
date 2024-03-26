@@ -2,11 +2,11 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import src.spherical_satellites_repartition as ssr
+import spherical_satellites_repartition as ssr
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import src.fonction_math as fm
+import fonction_math as fm
 import math
 from matplotlib import animation
 import pyvista as pv
@@ -34,9 +34,10 @@ def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope):
     return total_intensity >= min_intensity
 
 def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans= False, centroids= np.array(0), centroids_weights=np.array(0),rot=False, planet= "earth"):
-    #met le background en blanc
     sphere_center = (0, 0, 0)
     earth_radius = 50
+    cities_coordinates[:, 0] += np.pi
+    cities_coordinates = fm.spherical_to_cartesian(cities_coordinates, sphere_center, earth_radius)
 
     if planet == "moon":
         image = "Planet_Images\moon.jpg"
@@ -93,7 +94,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
                 'red'
         if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
 
-        plotter.add_mesh(pv.Sphere(radius=earth_radius/15, center=(x_city, y_city, z_city)), color=color, point_size=20)
+        plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
     if kmeans:
         for i, (x_og, y_og, z_og) in enumerate(centroids):

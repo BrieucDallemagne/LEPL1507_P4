@@ -208,3 +208,11 @@ def pui_coef(point_satt, city_coordinates, height = 4, earth_radius=50) :
     norm_a = np.linalg.norm(city_coordinates)
     r = np.linalg.norm(delta)
     return max(0.0, np.dot(delta,city_coordinates)/norm_a/r)
+
+def spherical_to_cartesian(spherical_coordinates, center, radius):
+    x = center[0] + radius * np.sin(spherical_coordinates[:, 1]) * np.cos(
+        spherical_coordinates[:, 0])
+    y = center[1] + radius * np.sin(spherical_coordinates[:, 1]) * np.sin(
+        spherical_coordinates[:, 0])
+    z = center[2] + radius * np.cos(spherical_coordinates[:, 1])
+    return np.c_[x, y, z]

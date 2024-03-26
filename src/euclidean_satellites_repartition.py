@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import fonction_math as fm
+import src.fonction_math as fm
 import math
 import numpy as np
 import matplotlib.pyplot as plt

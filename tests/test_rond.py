@@ -70,7 +70,7 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
             og_cit = np.c_[cities_x, cities_y, cities_z]
             og_weights = cities_weights
             cities_long_and_lat = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-            cities_wrap = fm.k_means_cities(cities_long_and_lat, n_cities//2, cities_weights)
+            cities_wrap = fm.k_means_cities(cities_long_and_lat, n_cities-1, cities_weights)
             cities_long_and_lat = cities_wrap[0]
             cities_weights = cities_wrap[1]
             cities_coordinates_latitude = cities_long_and_lat[:, 0]
@@ -87,5 +87,10 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
         plt.show()
 
 
+<<<<<<< HEAD:test_rond.py
+test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=False)
+test_solve_3D_random(n_tests=1, k_means=False, fix_seed=False, verbose=False)
+=======
 test_solve_3D_random(n_tests=1, k_means=False, real_cities=True, verbose=False)
 
+>>>>>>> 9bebf64ed674a52a2d6d7dea2626927bb2e5196e:tests/test_rond.py

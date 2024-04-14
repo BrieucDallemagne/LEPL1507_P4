@@ -10,6 +10,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
+import pandas as pd
+import test.test_rond as tr
 
 import plots.plot_plat as pp
 import plots.plot_rond as pr
@@ -18,24 +20,35 @@ import src.fonction_math as fm
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
+
+
 class SatelliteApp(ctk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.title("Remacle & Associates")
-        self.geometry("400x400")
+        self.geometry("400x500")
         self.resizable(True, True)
+        self.background_label = tk.Label(self)
         self.set_background()
         self.create_widgets()
+        self.bind("<Configure>", self.resize_background)
 
     def set_background(self):
         # Changer d'iamge ici
-        image = Image.open("bg.png")
-        image = image.resize((800, 700), Image.ANTIALIAS)
-        background_image = ImageTk.PhotoImage(image)
-        background_label = tk.Label(self, image=background_image)
-        background_label.image = background_image
-        background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        self.image = Image.open("Planet_Images/bg.png")
+        self.update_background()
+
+    def update_background(self):
+        resized_image = self.image.resize((self.winfo_width(), self.winfo_height()), Image.LANCZOS)
+        background_image = ImageTk.PhotoImage(resized_image)
+        self.background_label.config(image=background_image)
+        self.background_label.image = background_image
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+
+    def resize_background(self, event):
+        self.update_background()
+
     def create_widgets(self):
 
         # Mode
@@ -44,7 +57,7 @@ class SatelliteApp(ctk.CTk):
         self.mode_label = ctk.CTkLabel(self, text="Mode")
         self.mode_label.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
         # Création du menu déroulant avec les options
-        self.mode_menu = ctk.CTkOptionMenu(master=self, values=["Plat", "Sphérique"], variable=self.mode_var)
+        self.mode_menu = ctk.CTkOptionMenu(master=self, values=["Plat", "Sphérique","réel"], variable=self.mode_var)
         self.mode_menu.grid(row=1, column=1, padx=20, pady=20, columnspan=2, sticky="ew")
 
         # Number of cities
@@ -80,6 +93,9 @@ class SatelliteApp(ctk.CTk):
         self.verbose_checkbox = ctk.CTkCheckBox(self, text="Verbose", variable=self.verbose_checkbox_var)
         self.verbose_checkbox.grid(row=5, column=1, padx=20, pady=20, sticky="ew")
 
+        self.real_conditions_button = ctk.CTkButton(self, text="Conditions réelles", command=self.set_real_conditions)
+        self.real_conditions_button.grid(row=6, column=0, padx=20, pady=20, sticky="ew")
+
         # Planet
 
         #self.planet_var = ctk.StringVar()
@@ -94,19 +110,26 @@ class SatelliteApp(ctk.CTk):
         self.reset_results_button = ctk.CTkButton(self, text="Generate Results", command=self.choisir_mode)
         self.reset_results_button.grid(row=7, column=1, columnspan=2, padx=20, pady=20, sticky="ew")
 
+    def set_real_conditions(self):
+        self.mode_var.set("réel")
+        if self.number_cities_entry.get() == '':
+            self.number_cities_entry.insert(0, "18")
+        #self.rot_checkbox_var.set(True)
+        self.verbose_checkbox_var.set(False)
+        self.generate_results_button.invoke()
+
     def choisir_mode(self):
         mode = self.mode_var.get()
         num_villes = int(self.number_cities_entry.get())
         kmeans = self.kmeans_checkbox_var.get()
         verbose = self.verbose_checkbox_var.get()
         rot = self.rot_checkbox_var.get()
-        print(mode)
         #planet_type = self.planet_option_menu.get()
 
         if num_villes <= 0:
             messagebox.showerror("Erreur", "Le nombre de villes doit être supérieur à zéro.")
             return
-        print("hello")
+
         if mode == "Plat":
             grid_size = np.random.randint(10, 100)
             poids = fm.create_weight(num_villes)
@@ -122,7 +145,6 @@ class SatelliteApp(ctk.CTk):
             pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
             plt.show()
         elif mode == "Sphérique":
-            print("hello")
             cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
             cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
             cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
@@ -147,10 +169,15 @@ class SatelliteApp(ctk.CTk):
                                                                           verbose=verbose)
 
             if satellites_coordinates.size == 0:
-                messagebox.showerror("Erreur", "Aucun satellite n'a t trouv.")
+                messagebox.showerror("Erreur", "Aucun satellite n'a t trouvé")
                 return
             pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, rot=rot)
             plt.show()
+
+        elif mode == "réel":
+            tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=kmeans, 
+                                    real_cities = True, verbose = verbose, planet=False)
+            
 
 if __name__ == "__main__":
     app = SatelliteApp()

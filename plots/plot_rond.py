@@ -108,6 +108,6 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     # Légendage
     plotter.add_text(f"{cities_coordinates.shape[0]} villes, {satellites_coordinates.shape[0]} satellites", position="upper_right", font_size=10, color="white")
     plotter.add_text(f"{np.round(satisfied_proportion*100, decimals=2)} % de la population a une couverture réseau acceptable (I > {np.round(fm.minimum_intensity(height, earth_radius, fm.I)[0], decimals=7)})", position="upper_left", font_size=12, color="white")
-
+    
 
     plotter.show()

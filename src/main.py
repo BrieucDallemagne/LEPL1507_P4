@@ -11,7 +11,8 @@ import matplotlib.pyplot as plt
 import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
 import pandas as pd
-import tests.test_rond as tr
+import test.test_rond as tr
+import pandas as pd
 
 import plots.plot_plat as pp
 import plots.plot_rond as pr
@@ -53,7 +54,7 @@ class SatelliteApp(ctk.CTk):
 
         # Mode
         self.mode_var = tk.StringVar(self)  # Variable de contrôle
-        self.mode_var.set("Plat")  # Option par défaut
+        self.mode_var.set("Sphérique")  # Option par défaut
         self.mode_label = ctk.CTkLabel(self, text="Mode")
         self.mode_label.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
         # Création du menu déroulant avec les options
@@ -77,13 +78,13 @@ class SatelliteApp(ctk.CTk):
         self.kmeans_checkbox = ctk.CTkCheckBox(self, text="Kmeans", variable=self.kmeans_checkbox_var)
         self.kmeans_checkbox.grid(row=3, column=1, padx=20, pady=20, sticky="ew")
 
-        # Rotation
-        self.rot_label = ctk.CTkLabel(self, text="Rotation")
-        self.rot_label.grid(row=4, column=0, padx=20, pady=20, sticky="ew")
+        # csvation
+        self.csv_label = ctk.CTkLabel(self, text="csv")
+        self.csv_label.grid(row=4, column=0, padx=20, pady=20, sticky="ew")
 
-        self.rot_checkbox_var = ctk.BooleanVar()
-        self.rot_checkbox = ctk.CTkCheckBox(self, text="Rotation", variable=self.rot_checkbox_var)
-        self.rot_checkbox.grid(row=4, column=1, padx=20, pady=20, sticky="ew")
+        self.csv_checkbox_var = ctk.BooleanVar()
+        self.csv_checkbox = ctk.CTkCheckBox(self, text="csv", variable=self.csv_checkbox_var)
+        self.csv_checkbox.grid(row=4, column=1, padx=20, pady=20, sticky="ew")
 
         # Verbosity
         self.verbose_label = ctk.CTkLabel(self, text="Verbose")
@@ -114,7 +115,7 @@ class SatelliteApp(ctk.CTk):
         self.mode_var.set("réel")
         if self.number_cities_entry.get() == '':
             self.number_cities_entry.insert(0, "18")
-        #self.rot_checkbox_var.set(True)
+        #self.csv_checkbox_var.set(True)
         self.verbose_checkbox_var.set(False)
         self.generate_results_button.invoke()
 
@@ -125,7 +126,7 @@ class SatelliteApp(ctk.CTk):
         num_villes = int(self.number_cities_entry.get())
         kmeans = self.kmeans_checkbox_var.get()
         verbose = self.verbose_checkbox_var.get()
-        rot = self.rot_checkbox_var.get()
+        csv = self.csv_checkbox_var.get()
         #planet_type = self.planet_option_menu.get()
 
         if num_villes <= 0:
@@ -173,7 +174,7 @@ class SatelliteApp(ctk.CTk):
             if satellites_coordinates.size == 0:
                 messagebox.showerror("Erreur", "Aucun satellite n'a t trouvé")
                 return
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, rot=rot)
+            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, csv=csv)
             plt.show()
 
         elif mode == "réel":

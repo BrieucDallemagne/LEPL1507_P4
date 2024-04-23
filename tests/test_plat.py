@@ -73,7 +73,7 @@ def test_special_cases():
     pp.plot_covering_2D(cities_coordinates, [1], satellites_coordinates, 5)
 
 def big_test():
-    # test avec 100 villes et une grid de 2000x2000
+    # tests avec 100 villes et une grid de 2000x2000
     grid_size = 200
     n_cities = 10
     poids = fm.create_weight(n_cities)

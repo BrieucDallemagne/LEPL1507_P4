@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
 import pandas as pd
-import tests.test_rond as tr
+import test.test_rond as tr
 import pandas as pd
 import src.resolve_csv as rc
 
@@ -133,7 +133,7 @@ class SatelliteApp(ctk.CTk):
             grid_size = np.random.randint(10, 100)
             poids = fm.create_weight(num_villes)
             height = np.random.randint(1, 10)
-            ope = np.random.randint(height, 20)
+            scope = np.random.randint(height, 20)
             radius = np.sqrt(scope ** 2 - height ** 2)
             cities_coordinates = np.random.randint(0, grid_size, size=(num_villes, 2))
             nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)

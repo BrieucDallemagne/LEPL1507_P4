@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
 import pandas as pd
-import test.test_rond as tr
+import tests.test_rond as tr
 import pandas as pd
 import plots.plot_plat as pp
 import plots.plot_rond as pr

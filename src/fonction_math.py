@@ -182,7 +182,7 @@ def supp_3D(cities_en_trois_d):
     for i in range(len(cities_en_trois_d)):
         ret[i] = cities_en_trois_d[i][:2]
     return ret
-#petit test mignon pas du tout à sa place qui plot les villes et les nouveaux centroïdes, et colorie de la même couleur les clustered cities
+#petit tests mignon pas du tout à sa place qui plot les villes et les nouveaux centroïdes, et colorie de la même couleur les clustered cities
 def plot_kmeans(cities_coordinates, k, new_centroids):
     plt.scatter(cities_coordinates[:, 0], cities_coordinates[:, 1], c='black')
     plt.scatter(new_centroids[:, 0], new_centroids[:, 1], c='red')

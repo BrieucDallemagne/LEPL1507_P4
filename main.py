@@ -1,8 +1,4 @@
 import customtkinter as ctk
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 import tkinter as tk
 from tkinter import messagebox
 from PIL import ImageTk, Image
@@ -12,6 +8,8 @@ import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
 import pandas as pd
 import test.test_rond as tr
+import pandas as pd
+import src.resolve_csv as rc
 
 import plots.plot_plat as pp
 import plots.plot_rond as pr
@@ -27,7 +25,7 @@ class SatelliteApp(ctk.CTk):
         super().__init__(*args, **kwargs)
 
         self.title("Remacle & Associates")
-        self.geometry("400x500")
+        self.geometry("400x600")
         self.resizable(True, True)
         self.background_label = tk.Label(self)
         self.set_background()
@@ -53,11 +51,11 @@ class SatelliteApp(ctk.CTk):
 
         # Mode
         self.mode_var = tk.StringVar(self)  # Variable de contrôle
-        self.mode_var.set("Plat")  # Option par défaut
+        self.mode_var.set("Sphérique")  # Option par défaut
         self.mode_label = ctk.CTkLabel(self, text="Mode")
         self.mode_label.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
         # Création du menu déroulant avec les options
-        self.mode_menu = ctk.CTkOptionMenu(master=self, values=["Plat", "Sphérique","réel"], variable=self.mode_var)
+        self.mode_menu = ctk.CTkOptionMenu(master=self, values=["Plat", "Sphérique","réel","csv_plat","csv_rond"], variable=self.mode_var)
         self.mode_menu.grid(row=1, column=1, padx=20, pady=20, columnspan=2, sticky="ew")
 
         # Number of cities
@@ -68,6 +66,15 @@ class SatelliteApp(ctk.CTk):
         self.number_cities_entry.grid(row=2, column=1,
                            columnspan=3, padx=20,
                            pady=20, sticky="ew")
+        
+        # Number of cities
+        self.csvname_label = ctk.CTkLabel(self, text="csv name")
+        self.csvname_label.grid(row=6, column=0, padx=20, pady=20, sticky="ew")
+        self.csvname = ctk.CTkEntry(self,
+                                     placeholder_text="csv name (+ .csv)")
+        self.csvname.grid(row=6, column=1,
+                           columnspan=3, padx=20,
+                           pady=20, sticky="ew")
 
         # K-Means
         self.kmeans_label = ctk.CTkLabel(self, text="Kmeans")
@@ -76,15 +83,6 @@ class SatelliteApp(ctk.CTk):
         self.kmeans_checkbox_var = ctk.BooleanVar()
         self.kmeans_checkbox = ctk.CTkCheckBox(self, text="Kmeans", variable=self.kmeans_checkbox_var)
         self.kmeans_checkbox.grid(row=3, column=1, padx=20, pady=20, sticky="ew")
-
-        # Rotation
-        self.rot_label = ctk.CTkLabel(self, text="Rotation")
-        self.rot_label.grid(row=4, column=0, padx=20, pady=20, sticky="ew")
-
-        self.rot_checkbox_var = ctk.BooleanVar()
-        self.rot_checkbox = ctk.CTkCheckBox(self, text="Rotation", variable=self.rot_checkbox_var)
-        self.rot_checkbox.grid(row=4, column=1, padx=20, pady=20, sticky="ew")
-
         # Verbosity
         self.verbose_label = ctk.CTkLabel(self, text="Verbose")
         self.verbose_label.grid(row=5, column=0, padx=20, pady=20, sticky="ew")
@@ -94,7 +92,7 @@ class SatelliteApp(ctk.CTk):
         self.verbose_checkbox.grid(row=5, column=1, padx=20, pady=20, sticky="ew")
 
         self.real_conditions_button = ctk.CTkButton(self, text="Conditions réelles", command=self.set_real_conditions)
-        self.real_conditions_button.grid(row=6, column=0, padx=20, pady=20, sticky="ew")
+        self.real_conditions_button.grid(row=7, column=0, padx=20, pady=20, sticky="ew")
 
         # Planet
 
@@ -105,25 +103,26 @@ class SatelliteApp(ctk.CTk):
 
         # Generate Button
         self.generate_results_button = ctk.CTkButton(self, text="Generate Results", command=self.choisir_mode)
-        self.generate_results_button.grid(row=7, column=1, columnspan=2, padx=20, pady=20, sticky="ew")
+        self.generate_results_button.grid(row=8, column=1, columnspan=2, padx=20, pady=20, sticky="ew")
 
         self.reset_results_button = ctk.CTkButton(self, text="Generate Results", command=self.choisir_mode)
-        self.reset_results_button.grid(row=7, column=1, columnspan=2, padx=20, pady=20, sticky="ew")
+        self.reset_results_button.grid(row=8, column=1, columnspan=2, padx=20, pady=20, sticky="ew")
 
     def set_real_conditions(self):
         self.mode_var.set("réel")
         if self.number_cities_entry.get() == '':
             self.number_cities_entry.insert(0, "18")
-        #self.rot_checkbox_var.set(True)
         self.verbose_checkbox_var.set(False)
         self.generate_results_button.invoke()
 
     def choisir_mode(self):
         mode = self.mode_var.get()
+        csvname = self.csvname.get()
+        if self.number_cities_entry.get() == '':
+            self.number_cities_entry.insert(0, "18")
         num_villes = int(self.number_cities_entry.get())
         kmeans = self.kmeans_checkbox_var.get()
         verbose = self.verbose_checkbox_var.get()
-        rot = self.rot_checkbox_var.get()
         #planet_type = self.planet_option_menu.get()
 
         if num_villes <= 0:
@@ -171,12 +170,19 @@ class SatelliteApp(ctk.CTk):
             if satellites_coordinates.size == 0:
                 messagebox.showerror("Erreur", "Aucun satellite n'a t trouvé")
                 return
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, rot=rot)
+            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, rot=False)
             plt.show()
 
         elif mode == "réel":
             tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=kmeans, 
                                     real_cities = True, verbose = verbose, planet=False)
+            
+        elif mode == "csv_plat":
+            rc.resolve_carre(num_villes, csvname)
+
+        elif mode == "csv_rond":
+            rc.resolve_rond(num_villes, csvname)
+
             
 
 if __name__ == "__main__":

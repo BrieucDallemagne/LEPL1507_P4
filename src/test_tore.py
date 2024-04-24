@@ -2,13 +2,13 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import spherical_satellites_repartition as ssr
+import tore_satellites_repartition as ssr
 import numpy as np
 import matplotlib.pyplot as plt
 import random
 from mpl_toolkits.mplot3d import Axes3D
 import fonction_math as fm
-import plots.plot_tore as pr
+import plot_tore as pr
 import math
 import matplotlib
 import csv
@@ -18,7 +18,7 @@ matplotlib.use('TkAgg')
 def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose = False, planet=False):
     for i in range(n_tests):
         if real_cities:
-            n_cities = np.random.randint(50, 100)
+            n_cities = np.random.randint(10, 40)
             file = open('worldcities.csv', 'r', encoding='utf-8')
             csv_reader = csv.DictReader(file)
 
@@ -41,7 +41,7 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
                     countries_names.append(row['country'])
 
             cities_coordinates_sph = np.array([longitudes, latitudes]).T
-            cities_coordinates_sph[:, 1] = (90 - cities_coordinates_sph[:, 1]) 
+            cities_coordinates_sph[:, 1] = (180 - 2*cities_coordinates_sph[:, 1]) 
             cities_coordinates = np.radians(cities_coordinates_sph)
             print("Villes affichées :")
             for i in range(n_cities):
@@ -50,14 +50,15 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
 
             cities_weights = np.full(cities_coordinates_sph.shape[0], 1/cities_coordinates_sph.shape[0])
         else:
-            n_cities = np.random.randint(5, 100)
+            n_cities = np.random.randint(10, 40)
             #cities_weights = fm.create_weight(n_cities)
             cities_weights = np.full(n_cities, 1/n_cities)
             radius_earth = 50
-
-            cities_coordinates_latitude = np.radians(np.random.randint(-90, 90, size=(n_cities)))
+            
+            cities_coordinates_latitude = np.radians(np.random.randint(-180, 180, size=(n_cities)))
             cities_coordinates_longitude = np.radians(np.random.randint(-180, 180, size=(n_cities)))
             cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
+        
         og_cit = np.array(0)
         og_weights = np.array(0)
         if k_means:
@@ -80,8 +81,10 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
         if k_means:
+            
             pr.plot_torus(og_cit, satellites_coordinates, og_weights, 10, k_means,  centroids = cities_coordinates, centroids_weights = cities_weights, rot=False, planet = "earth")
         else:
+            
             pr.plot_torus(cities_coordinates, satellites_coordinates, cities_weights, 10, False, centroids=np.array(0),
                    centroids_weights=np.array(0), rot=False, planet="earth")
         plt.show()

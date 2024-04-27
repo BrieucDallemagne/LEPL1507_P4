@@ -193,6 +193,7 @@ def find_x(height=4, earth_radius=50):
 
 def I(r,coef=1) :
     return coef/r**2
+
 def I_tore(sph_cities_coords, cities_coords,x_grid,y_grid,z_grid) :
     satellites_coords=np.array([x_grid,y_grid,z_grid]).T
     alpha_matrix=coef_tore(sph_cities_coords, cities_coords, x_grid, y_grid, z_grid)
@@ -230,7 +231,7 @@ def compute_torus_normals(theta, phi):
 
 def minimum_intensity(height, earth_radius, I) :
     thetamax=np.pi/2-np.arccos(earth_radius/(height+earth_radius))
-    thetacool=thetamax/3
+    thetacool=thetamax/4
     b=2*np.sin(thetacool/2)*earth_radius
     alpha=(np.pi-thetacool)/2
     rangle=np.sqrt(height**2+b**2-2*height*b*np.cos(np.pi-alpha))
@@ -254,13 +255,14 @@ def spherical_to_cartesian(spherical_coordinates, center, radius):
         spherical_coordinates[:, 0])
     z = center[2] + radius * np.cos(spherical_coordinates[:, 1])
     return np.c_[x, y, z]
+
 def cartesian_to_spherical(cartesian_coordinates):
-    
     x, y, z = cartesian_coordinates[:, 0], cartesian_coordinates[:, 1], cartesian_coordinates[:, 2]
     r = np.sqrt(x ** 2 + y ** 2 + z ** 2)
     theta = np.arctan2(y, x)
     phi = np.arccos(z / r)
     return np.c_[theta, phi]
+
 def spherical_to_cartesian_torus(spherical_coordinates, center, radius, cross_section_radius):
     x = center[0] + (radius + cross_section_radius * np.cos(spherical_coordinates[:, 1])) * np.cos(
         spherical_coordinates[:, 0])

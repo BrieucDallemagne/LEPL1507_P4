@@ -35,7 +35,6 @@ def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope):
 def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans= False, centroids= np.array(0), centroids_weights=np.array(0),rot=False, planet= "earth"):
     sphere_center = (0, 0, 0)
     earth_radius = 50
-    cities_coordinates[:, 0] += np.pi
     cities_coordinates = fm.spherical_to_cartesian(cities_coordinates, sphere_center, earth_radius)
 
     if planet == "moon":
@@ -53,6 +52,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     plotter = pv.Plotter()
     plotter.set_background('black')
     earth_mesh = pv.examples.planets.load_earth()
+    earth_mesh.rotate_z(180, inplace=True)
     earth_mesh.points *= earth_radius
     texture = pv.read_texture(image)
     plotter.add_mesh(earth_mesh, texture=texture)
@@ -91,7 +91,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
         color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
                 'orange' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
                 'red'
-        if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
+        #if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
 
         plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 

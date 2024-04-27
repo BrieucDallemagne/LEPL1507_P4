@@ -90,8 +90,6 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     cities_coordinates = copy.copy(cities_coordinates)
     num_cities = cities_coordinates.shape[0]
 
-    cities_coordinates[:, 0] += np.pi
-
     earth_radius = 50
     scope = fm.find_x(height, earth_radius)
     satellite_radius = earth_radius + height
@@ -101,6 +99,12 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     theta_values = np.linspace(0, 2 * np.pi, 20)[1:]
     phi_values = np.linspace(0, np.pi, 20)[1:-1]
+
+    forbidden_positions = []
+    for i in range(len(theta_values)):
+        for j in range(len(phi_values)):
+            if (phi_values[j] >= 3*np.pi/4):
+                forbidden_positions.append(i*len(phi_values) + j)
 
     # Create 2D arrays for theta and phi
     phi, theta = np.meshgrid(phi_values, theta_values)
@@ -121,7 +125,6 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     # Objective
     objective = cp.Minimize(cp.sum(satellite_positions))
-    # objective = cp.Maximize(cp.sum(how_many_times_covered))
 
     indices_within_scope = [
         np.where(distances_matrix[i] <= scope)[0] for i in range(num_cities)
@@ -129,14 +132,16 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     # Constraints
     constraints = []
-    min_intensity = fm.minimum_intensity(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height) 
+    min_intensity = fm.minimum_intensity(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height)
 
     constraints.append((enough_intensity @ cities_weights) >= 0.8)
     for i in range(num_cities):
         intensity = cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]])
         constraints.append(enough_intensity[i] <= intensity/min_intensity)
         constraints.append(min_intensity - intensity >= -1000000*enough_intensity[i])
-        
+    for i in range(len(theta_values) * len(phi_values)):
+        if i in forbidden_positions:
+            constraints.append(satellite_positions[i] == 0)
 
     # Solve
     problem = cp.Problem(objective, constraints)
@@ -161,7 +166,6 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
             cities_intensity.append(cp.sum(cp.multiply(inv_squared_distances_matrix[i], satellite_positions)[indices_within_scope[i]]).value)
         print("Intensités des villes")
         print(cities_intensity)
-        #print((inv_squared_distances_matrix @ satellite_positions).value)
         print("Solution matrix")
         print(solution_matrix)
         print("Coordonnées des satellites (theta, phi)")

@@ -62,7 +62,7 @@ class SatelliteApp(ctk.CTk):
         self.number_cities_label = ctk.CTkLabel(self, text="Number of Cities")
         self.number_cities_label.grid(row=2, column=0, padx=20, pady=20, sticky="ew")
         self.number_cities_entry = ctk.CTkEntry(self,
-                                     placeholder_text="18")
+                                     placeholder_text="20")
         self.number_cities_entry.grid(row=2, column=1,
                            columnspan=3, padx=20,
                            pady=20, sticky="ew")
@@ -148,29 +148,21 @@ class SatelliteApp(ctk.CTk):
             cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
             cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
             cities_weights = np.full(num_villes, 1 / num_villes)
-            radius_earth = 50
-            cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in
-                        cities_coordinates]
-            cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in
-                        cities_coordinates]
-            cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
-            cities_coordinates = np.c_[cities_x, cities_y, cities_z]
-
-            original_cities = cities_coordinates
-            original_weights = cities_weights
 
             if kmeans:
-                cities_coordinates, cities_weights = fm.k_means_cities(cities_coordinates, num_villes // 2,
-                                                                       cities_weights)
-
-            number_of_satellites = np.random.randint(1, num_villes)
-            satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10,
-                                                                          verbose=verbose)
+                centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, num_villes//2, cities_weights)
+                satellites_coordinates = ssr.spherical_satellites_repartition(fm.cartesian_to_spherical(centroids_coordinates), centroids_weights, 10, verbose=verbose)
+            else:
+                satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
 
             if satellites_coordinates.size == 0:
-                messagebox.showerror("Erreur", "Aucun satellite n'a t trouvé")
+                messagebox.showerror("Erreur", "Aucun satellite n'a été trouvé")
                 return
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, rot=False)
+            
+            if kmeans:
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, centroids=centroids_coordinates)
+            else:
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans)
             plt.show()
 
         elif mode == "réel":

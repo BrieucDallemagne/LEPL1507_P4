@@ -32,7 +32,7 @@ def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope):
             total_intensity += fm.I(city_satellite_distance)
     return total_intensity >= min_intensity
 
-def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans= False, centroids= np.array(0), centroids_weights=np.array(0),rot=False, planet= "earth"):
+def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans=False, centroids=[[0, 0, 0]], planet= "earth"):
     sphere_center = (0, 0, 0)
     earth_radius = 50
     cities_coordinates = fm.spherical_to_cartesian(cities_coordinates, sphere_center, earth_radius)
@@ -69,7 +69,9 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     # Rayon de la sphère
     satellite_radius = 50 + height
     scope = fm.find_x(height, earth_radius)
+
     # Dessiner les satellites
+
     x_sat = sphere_center[0] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.cos(
         satellites_coordinates[:, 0])
     y_sat = sphere_center[1] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.sin(
@@ -95,11 +97,10 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
 
         plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
-    if kmeans:
-        for i, (x_og, y_og, z_og) in enumerate(centroids):
-            is_covered = is_covered_3D([x_og, y_og, z_og], satellites_spherical_coordinates, scope)
-            color = 'pink' if is_covered else 'blue'
-            plotter.add_mesh(pv.Sphere(radius=earth_radius/15, center=(x_og, y_og, z_og)), color=color, point_size=20)
+    for i, (x_og, y_og, z_og) in enumerate(centroids):
+        is_covered = is_covered_3D([x_og, y_og, z_og], satellites_spherical_coordinates, scope)
+        color = 'pink' if is_covered else 'blue'
+        plotter.add_mesh(pv.Sphere(radius=earth_radius/25, center=(x_og, y_og, z_og)), color=color, point_size=20)
 
     
     # Position de la caméra
@@ -108,6 +109,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
     # Légendage
     plotter.add_text(f"{cities_coordinates.shape[0]} villes, {satellites_coordinates.shape[0]} satellites", position="upper_right", font_size=10, color="white")
     plotter.add_text(f"{np.round(satisfied_proportion*100, decimals=2)} % de la population a une couverture réseau acceptable (I > {np.round(fm.minimum_intensity(height, earth_radius, fm.I)[0], decimals=7)})", position="upper_left", font_size=12, color="white")
-    
+    if kmeans:
+        plotter.add_text(f"KMeans a réduit {cities_coordinates.shape[0]} villes en {len(centroids)} centroïdes", position="lower_right", font_size=12, color="white")   
 
     plotter.show()

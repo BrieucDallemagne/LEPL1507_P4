@@ -161,6 +161,7 @@ def k_means_cities(cities_coordinates, k, cities_weights):
     Returns:
 
     """
+    cities_coordinates = spherical_to_cartesian(cities_coordinates, [0, 0, 0], 50)
     kmeans = KMeans(n_clusters=k, max_iter = 100)
     kmeans.fit(cities_coordinates, cities_weights)
     #retourne les nouveaux poids
@@ -168,7 +169,10 @@ def k_means_cities(cities_coordinates, k, cities_weights):
     prediction = kmeans.predict(cities_coordinates)
     for i in range(len(cities_coordinates)):
         new_weights[int(prediction[i])] += cities_weights[i]
-    return kmeans.cluster_centers_, new_weights
+    new_coordinates = kmeans.cluster_centers_
+    for i in range(k):
+        new_coordinates[i] = new_coordinates[i] / np.linalg.norm(new_coordinates[i]) * 50
+    return new_coordinates, new_weights
 
 def adapt_to_3D(cities_en_deux_d, val_array):
     ret = np.zeros((len(cities_en_deux_d), 3))
@@ -231,7 +235,7 @@ def compute_torus_normals(theta, phi):
 
 def minimum_intensity(height, earth_radius, I) :
     thetamax=np.pi/2-np.arccos(earth_radius/(height+earth_radius))
-    thetacool=thetamax/4
+    thetacool=thetamax/1.5
     b=2*np.sin(thetacool/2)*earth_radius
     alpha=(np.pi-thetacool)/2
     rangle=np.sqrt(height**2+b**2-2*height*b*np.cos(np.pi-alpha))

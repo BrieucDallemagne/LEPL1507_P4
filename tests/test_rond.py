@@ -79,10 +79,9 @@ def test_solve_3D_random(n_cities=100,n_tests=5, k_means=False, real_cities = Fa
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
         if k_means:
-            pr.plot_3D(og_cit, satellites_coordinates, og_weights, 10, k_means,  centroids = cities_coordinates, centroids_weights = cities_weights, rot=False, planet = "earth")
+            pr.plot_3D(og_cit, satellites_coordinates, og_weights, 10, k_means,  centroids = cities_coordinates,  planet = "earth")
         else:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, False, centroids=np.array(0),
-                   centroids_weights=np.array(0), rot=False, planet="earth")
+            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10,  planet="earth")
         plt.show()
 
 

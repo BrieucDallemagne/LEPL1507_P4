@@ -115,7 +115,6 @@ def plot_torus(cities_coordinates, satellites_coordinates, cities_weights, heigh
         color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope,coefs) else \
                 'orange' if is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope,coefs) else \
                 'red'
-        if (is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope,coefs)): print("Orange!")
 
         plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 

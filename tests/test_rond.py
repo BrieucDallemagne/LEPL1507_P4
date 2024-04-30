@@ -84,5 +84,3 @@ def test_solve_3D_random(n_cities=100,n_tests=5, k_means=False, real_cities = Fa
             pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10,  planet="earth")
         plt.show()
 
-test_solve_3D_random(n_tests=1, k_means=False, real_cities=True, verbose=False)
-

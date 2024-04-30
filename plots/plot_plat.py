@@ -19,7 +19,7 @@ def mapping(cities_coordinates, max_grid_size):
     transformation_ratio = max_grid_size / max_length
     return cities_coordinates * transformation_ratio
 
-def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates, grid_size):
+def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates):
     # Extraire les coordonnées x et y des points
     x_coords, y_coords = zip(*cities_coordinates)
 

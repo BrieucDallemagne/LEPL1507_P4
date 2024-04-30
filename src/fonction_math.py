@@ -151,7 +151,7 @@ def distance_angulaire(lat1, lon1, lat2, lon2):
     b=np.array([np.cos(lat2)*np.cos(lon2),np.cos(lat2)*np.sin(lon2),np.sin(lat2)])
     return np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))
 
-def k_means_cities(cities_coordinates, k, cities_weights):
+def k_means_cities(cities_coordinates, k, cities_weights, spherical=False):
     """
     Apply the k-means algorithm to the cities' coordinates
     Args:
@@ -161,7 +161,8 @@ def k_means_cities(cities_coordinates, k, cities_weights):
     Returns:
 
     """
-    cities_coordinates = spherical_to_cartesian(cities_coordinates, [0, 0, 0], 50)
+    if spherical:
+        cities_coordinates = spherical_to_cartesian(cities_coordinates, [0, 0, 0], 50)
     kmeans = KMeans(n_clusters=k, max_iter = 100)
     kmeans.fit(cities_coordinates, cities_weights)
     #retourne les nouveaux poids
@@ -170,8 +171,9 @@ def k_means_cities(cities_coordinates, k, cities_weights):
     for i in range(len(cities_coordinates)):
         new_weights[int(prediction[i])] += cities_weights[i]
     new_coordinates = kmeans.cluster_centers_
-    for i in range(k):
-        new_coordinates[i] = new_coordinates[i] / np.linalg.norm(new_coordinates[i]) * 50
+    if spherical:
+        for i in range(k):
+            new_coordinates[i] = new_coordinates[i] / np.linalg.norm(new_coordinates[i]) * 50
     return new_coordinates, new_weights
 
 def adapt_to_3D(cities_en_deux_d, val_array):

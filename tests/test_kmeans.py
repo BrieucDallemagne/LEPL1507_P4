@@ -3,7 +3,6 @@ import src.fonction_math as fm
 import numpy as np
 import pyvista as pv
 from plots.plot_rond import plot_3D
-
 def plot_centroids_and_cities(cities_coordinates, cities_weights, new_centroids, centroids_weight):
     fig, ax = plt.subplots()
     ax.scatter(cities_coordinates[:, 0], cities_coordinates[:, 1], c='blue', label='Cities')
@@ -19,5 +18,4 @@ cities_c = np.array([[1, 2],[0,1],[1,0],[2,1]])
 cities_w = np.array([0.25,0.25,0.25,0.25])
 new_centroids = fm.k_means_cities(cities_c, 2, cities_w)
 plot_centroids_and_cities(cities_c, cities_w, new_centroids[0], new_centroids[1])
-#essaie de plot sur la terre avec pyvista
-plot_3D(fm.adapt_to_3D(cities_c), fm.adapt_to_3D(new_centroids[0]), cities_w, 10, kmeans=True, rot=False)
+

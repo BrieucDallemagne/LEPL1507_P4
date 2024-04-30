@@ -133,15 +133,23 @@ class SatelliteApp(ctk.CTk):
             grid_size = np.random.randint(10, 100)
             poids = fm.create_weight(num_villes)
             height = np.random.randint(1, 10)
+            cities_weights = np.full(num_villes, 1 / num_villes)
             scope = np.random.randint(height, 20)
             radius = np.sqrt(scope ** 2 - height ** 2)
             cities_coordinates = np.random.randint(0, grid_size, size=(num_villes, 2))
             nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
             number_of_satellites = nbr_max_sat
-            satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates,
+            if kmeans:
+                centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, num_villes // 2,
+                                                                         cities_weights)
+                satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, centroids_coordinates,
+                                                                          centroids_weights, grid_size, scope, height,
+                                                                          intensity=1000)
+            else:
+                satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates,
                                                                           poids, grid_size, scope, height,
                                                                           intensity=1000)
-            pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, grid_size)
+            pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates)
             plt.show()
         elif mode == "Sphérique":
             cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
@@ -150,7 +158,7 @@ class SatelliteApp(ctk.CTk):
             cities_weights = np.full(num_villes, 1 / num_villes)
 
             if kmeans:
-                centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, num_villes//2, cities_weights)
+                centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, num_villes//2, cities_weights, spherical=True)
                 satellites_coordinates = ssr.spherical_satellites_repartition(fm.cartesian_to_spherical(centroids_coordinates), centroids_weights, 10, verbose=verbose)
             else:
                 satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)

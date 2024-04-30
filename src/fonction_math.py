@@ -198,6 +198,16 @@ def find_x(height=4, earth_radius=50):
 def I(r,coef=1) :
     return coef/r**2
 
+def I_sph(sph_cities_coords, cities_coords,x_grid,y_grid,z_grid) :
+    satellites_coords=np.array([x_grid,y_grid,z_grid]).T
+    alpha_matrix=coef_sphere(sph_cities_coords, cities_coords, x_grid, y_grid, z_grid)
+    distance_matrix=cdist(cities_coords, satellites_coords)
+    I_return=np.zeros((np.shape(alpha_matrix)[0],np.shape(alpha_matrix)[1]))
+    for i in range(np.shape(alpha_matrix)[0]) :
+        for j in range(np.shape(alpha_matrix)[1]) :
+            I_return[i,j]=I(distance_matrix[i,j])*alpha_matrix[i,j]
+    return I_return
+
 def I_tore(sph_cities_coords, cities_coords,x_grid,y_grid,z_grid) :
     satellites_coords=np.array([x_grid,y_grid,z_grid]).T
     alpha_matrix=coef_tore(sph_cities_coords, cities_coords, x_grid, y_grid, z_grid)
@@ -214,7 +224,14 @@ def coef_tore (sph_cities_coords, cities_coords, x_grid, y_grid, z_grid) :
     delta_coords=satellites_coords-cities_coords[:,np.newaxis]
     alpha_matrix=np.sum(delta_coords*nrmls_cities[:,np.newaxis],axis=2)/np.linalg.norm(delta_coords,axis=2)
     alpha_matrix[alpha_matrix<0]=0
-    #alpha_matrix=np.ones(np.shape(alpha_matrix))
+    return alpha_matrix
+
+def coef_sphere(sph_cities_coords, cities_coords, x_grid, y_grid, z_grid) :
+    nrmls_cities=compute_sph_normals(sph_cities_coords[:,0],sph_cities_coords[:,1])
+    satellites_coords=np.array([x_grid,y_grid,z_grid]).T
+    delta_coords=satellites_coords-cities_coords[:,np.newaxis]
+    alpha_matrix=np.sum(delta_coords*nrmls_cities[:,np.newaxis],axis=2)/np.linalg.norm(delta_coords,axis=2)
+    alpha_matrix[alpha_matrix<0]=0
     return alpha_matrix
 
 def compute_torus_normals(theta, phi):
@@ -232,6 +249,12 @@ def compute_torus_normals(theta, phi):
     normal_y = np.sin(theta) * np.cos(phi)
     normal_z = np.sin(phi)
     return np.array([normal_x, normal_y, normal_z]).T
+
+def compute_sph_normals(theta, phi) :
+    normal_x=np.sin(phi)*np.cos(theta)
+    normal_y=np.sin(phi)*np.sin(theta)
+    normal_z=np.cos(phi)
+    return np.array([normal_x,normal_y,normal_z]).T
 
 def minimum_intensity(height, earth_radius, I) :
     thetamax=np.pi/2-np.arccos(earth_radius/(height+earth_radius))

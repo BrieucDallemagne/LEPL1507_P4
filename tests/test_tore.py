@@ -7,8 +7,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 from mpl_toolkits.mplot3d import Axes3D
-import fonction_math as fm
-import plot_tore as pr
+import src.fonction_math as fm
+import plots.plot_tore as pr
 import math
 import matplotlib
 import csv

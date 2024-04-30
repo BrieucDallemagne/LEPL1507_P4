@@ -2,11 +2,10 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import spherical_satellites_repartition as ssr
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-import fonction_math as fm
+import src.fonction_math as fm
 import math  
 from matplotlib import animation
 import pyvista as pv
@@ -24,21 +23,25 @@ def is_covered_3D(city_coords, satellites_coords, scope):
             return True
     return False
 
-def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope):
+def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope,coefs):
+   
     total_intensity = 0
-    for satellite_coords in satellites_coords:
+    city_coords = np.array(city_coords)
+    for satellite_coords_curr, coef in zip(satellites_coords, coefs):        
         city_satellite_distance = math.sqrt(
-            (city_coords[0] - satellite_coords[0]) ** 2 + (city_coords[1] - satellite_coords[1]) ** 2 + (city_coords[2] - satellite_coords[2]) ** 2)
+            (city_coords[0] - satellite_coords_curr[0]) ** 2 + (city_coords[1] - satellite_coords_curr[1]) ** 2 + (city_coords[2] - satellite_coords_curr[2]) ** 2)
         if city_satellite_distance <= scope:
-            total_intensity += fm.I(city_satellite_distance)
+            total_intensity += fm.I(city_satellite_distance, coef=coef)
     return total_intensity >= min_intensity
+
 
 def plot_torus(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans= False, centroids= np.array(0), centroids_weights=np.array(0),rot=False, planet= "earth"):
     sphere_center = (0, 0, 0)
     earth_radius = 50
+    earth_radius2 = 20
     cities_coordinates[:, 0] += np.pi
-    cities_coordinates = fm.spherical_to_cartesian(cities_coordinates, sphere_center, earth_radius)
-
+    cities_coordinates_spherical = np.copy(cities_coordinates)
+    cities_coordinates = fm.spherical_to_cartesian_torus(cities_coordinates, sphere_center, earth_radius, earth_radius2)
     if planet == "moon":
         image = "Planet_Images\moon.jpg"
     elif planet == "mars":
@@ -55,8 +58,8 @@ def plot_torus(cities_coordinates, satellites_coordinates, cities_weights, heigh
     plotter.set_background('black')
 
      # Rayon du tore
-    torus_radius = 50 + height
-    torus_cross_section_radius = 20
+    torus_radius = earth_radius
+    torus_cross_section_radius = earth_radius2
     resolution = 100  
 
     
@@ -91,36 +94,34 @@ def plot_torus(cities_coordinates, satellites_coordinates, cities_weights, heigh
 
     # Rayon de la sphère
     satellite_radius = 50 + height
-    scope = fm.find_x(height, earth_radius)
-    # Dessiner les satellites
-    x_sat = sphere_center[0] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.cos(
-        satellites_coordinates[:, 0])
-    y_sat = sphere_center[1] + satellite_radius * np.sin(satellites_coordinates[:, 1]) * np.sin(
-        satellites_coordinates[:, 0])
-    z_sat = sphere_center[2] + satellite_radius * np.cos(satellites_coordinates[:, 1])
+    scope = fm.find_x(height, earth_radius)*10
 
+    # Dessiner les satellites sur un tore
+    satellites_cart_coordinates = fm.spherical_to_cartesian_torus(satellites_coordinates, sphere_center, torus_radius, torus_cross_section_radius+height)
+    x_sat = satellites_cart_coordinates[:, 0]
+    y_sat = satellites_cart_coordinates[:, 1]
+    z_sat = satellites_cart_coordinates[:, 2]
+
+    intensity_matrix = fm.I_tore(cities_coordinates_spherical, cities_coordinates, x_sat, y_sat, z_sat)
     for x_s, y_s, z_s in zip(x_sat, y_sat, z_sat):
-        sphere = pv.Sphere(radius=scope, center=(x_s, y_s, z_s))
+        sphere = pv.Sphere(radius=scope/50, center=(x_s, y_s, z_s))
         plotter.add_mesh(sphere, color='firebrick', point_size=10, opacity=0.3)
-
-    satellites_spherical_coordinates = np.c_[x_sat, y_sat, z_sat]
-
-    # Dessiner les villes
+    satellites_cart_coordinates = np.c_[x_sat, y_sat, z_sat]
     satisfied_proportion = 0
-
-    for i, (x_city, y_city, z_city) in enumerate(cities_coordinates):
-        is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
-        if has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope): satisfied_proportion += cities_weights[i]
-        color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
-                'orange' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
+    alpha_coefs = fm.coef_tore(cities_coordinates_spherical, cities_coordinates, x_sat, y_sat, z_sat)
+    for i, ((x_city, y_city, z_city), coefs) in enumerate(zip(cities_coordinates, alpha_coefs)):
+        is_covered = is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope)
+        if has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope, coefs): satisfied_proportion += cities_weights[i]
+        color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope,coefs) else \
+                'orange' if is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope,coefs) else \
                 'red'
-        if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
+        if (is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity2(height, fm.I), scope,coefs)): print("Orange!")
 
         plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
     if kmeans:
         for i, (x_og, y_og, z_og) in enumerate(centroids):
-            is_covered = is_covered_3D([x_og, y_og, z_og], satellites_spherical_coordinates, scope)
+            is_covered = is_covered_3D([x_og, y_og, z_og], satellites_cart_coordinates, scope)
             color = 'pink' if is_covered else 'blue'
             plotter.add_mesh(pv.Sphere(radius=earth_radius/15, center=(x_og, y_og, z_og)), color=color, point_size=20)
 
@@ -130,7 +131,7 @@ def plot_torus(cities_coordinates, satellites_coordinates, cities_weights, heigh
 
     # Légendage
     plotter.add_text(f"{cities_coordinates.shape[0]} villes, {satellites_coordinates.shape[0]} satellites", position="upper_right", font_size=10, color="white")
-    plotter.add_text(f"{np.round(satisfied_proportion*100, decimals=2)} % de la population a une couverture réseau acceptable (I > {np.round(fm.minimum_intensity(height, earth_radius, fm.I)[0], decimals=7)})", position="upper_left", font_size=12, color="white")
+    plotter.add_text(f"{np.round(satisfied_proportion*100, decimals=2)} % de la population a une couverture réseau acceptable (I > {np.round(fm.minimum_intensity2(height, fm.I), decimals=7)})", position="upper_left", font_size=12, color="white")
 
     # Show the plot
     plotter.show()

@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import src.fonction_math as fm
+import fonction_math as fm
 import numpy as np
 import cvxpy as cp
 import math
@@ -87,6 +87,7 @@ def spherical_satellites_repartition_old(cities_coordinates, cities_weights, hei
     return coords
 
 def spherical_satellites_repartition(cities_coordinates, cities_weights, height=4, verbose=False):
+    sph_cities_coords=np.copy(cities_coordinates)
     cities_coordinates = copy.copy(cities_coordinates)
     num_cities = cities_coordinates.shape[0]
 
@@ -117,7 +118,8 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     # Create a matrix for distances
     grid_points = np.column_stack((x_grid, y_grid, z_grid))
     distances_matrix = cdist(cities_coordinates, grid_points)
-    inv_squared_distances_matrix = fm.I(distances_matrix)#1 / (np.square(distances_matrix))    
+
+    inv_squared_distances_matrix = fm.I_sph(sph_cities_coords,cities_coordinates, x_grid, y_grid, z_grid)   
 
     # Variables
     satellite_positions = cp.Variable(len(theta_values) * len(phi_values), boolean=True)

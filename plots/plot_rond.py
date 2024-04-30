@@ -23,18 +23,25 @@ def is_covered_3D(city_coords, satellites_coords, scope):
             return True
     return False
 
-def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope):
+def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope,coefs):
+    print ("city_coords", city_coords)
+    print ("satellites_coords", satellites_coords)
+    print ("min_intensity", min_intensity)
+    print ("scope", scope)
+    print ("coefs", coefs)
     total_intensity = 0
-    for satellite_coords in satellites_coords:
+    city_coords = np.array(city_coords)
+    for satellite_coords_curr, coef in zip(satellites_coords, coefs):        
         city_satellite_distance = math.sqrt(
-            (city_coords[0] - satellite_coords[0]) ** 2 + (city_coords[1] - satellite_coords[1]) ** 2 + (city_coords[2] - satellite_coords[2]) ** 2)
+            (city_coords[0] - satellite_coords_curr[0]) ** 2 + (city_coords[1] - satellite_coords_curr[1]) ** 2 + (city_coords[2] - satellite_coords_curr[2]) ** 2)
         if city_satellite_distance <= scope:
-            total_intensity += fm.I(city_satellite_distance)
-    return total_intensity >= min_intensity
+            total_intensity += fm.I(city_satellite_distance, coef=coef)
+    return total_intensity >= min_intensity[0]
 
 def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans=False, centroids=[[0, 0, 0]], planet= "earth"):
     sphere_center = (0, 0, 0)
     earth_radius = 50
+    cities_coordinates_spherical = np.copy(cities_coordinates)
     cities_coordinates = fm.spherical_to_cartesian(cities_coordinates, sphere_center, earth_radius)
 
     if planet == "moon":
@@ -82,23 +89,25 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
         sphere = pv.Sphere(radius=scope, center=(x_s, y_s, z_s))
         plotter.add_mesh(sphere, color='firebrick', point_size=10, opacity=0.3)
 
-    satellites_spherical_coordinates = np.c_[x_sat, y_sat, z_sat]
+    satellites_cart_coordinates = np.c_[x_sat, y_sat, z_sat]
 
     # Dessiner les villes
     satisfied_proportion = 0
 
-    for i, (x_city, y_city, z_city) in enumerate(cities_coordinates):
-        is_covered = is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope)
-        if has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope): satisfied_proportion += cities_weights[i]
-        color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
-                'orange' if is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope) else \
+    alpha_coefs = fm.coef_sphere(cities_coordinates_spherical, cities_coordinates,x_sat, y_sat, z_sat)
+
+    for i, ((x_city, y_city, z_city), coefs) in enumerate(zip(cities_coordinates, alpha_coefs)):
+        is_covered = is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope)
+        if has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity(height,earth_radius, fm.I), scope, coefs): satisfied_proportion += cities_weights[i]
+        color = 'green' if is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity(height,earth_radius, fm.I), scope,coefs) else \
+                'orange' if is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity(height,earth_radius, fm.I), scope,coefs) else \
                 'red'
-        #if (is_covered_3D([x_city, y_city, z_city], satellites_spherical_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_spherical_coordinates, fm.minimum_intensity(height, earth_radius, fm.I)[0], scope)): print("Orange!")
+        if (is_covered_3D([x_city, y_city, z_city], satellites_cart_coordinates, scope) and not has_enough_intensity([x_city, y_city, z_city], satellites_cart_coordinates, fm.minimum_intensity(height,earth_radius, fm.I), scope,coefs)): print("Orange!")
 
         plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
     for i, (x_og, y_og, z_og) in enumerate(centroids):
-        is_covered = is_covered_3D([x_og, y_og, z_og], satellites_spherical_coordinates, scope)
+        is_covered = is_covered_3D([x_og, y_og, z_og], satellites_cart_coordinates, scope)
         color = 'pink' if is_covered else 'blue'
         plotter.add_mesh(pv.Sphere(radius=earth_radius/25, center=(x_og, y_og, z_og)), color=color, point_size=20)
 

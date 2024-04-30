@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
 import pandas as pd
-import tests.test_rond as tr
+import test.test_rond as tr
 import pandas as pd
 import src.resolve_csv as rc
 
@@ -25,7 +25,7 @@ class SatelliteApp(ctk.CTk):
         super().__init__(*args, **kwargs)
 
         self.title("Remacle & Associates")
-        self.geometry("400x600")
+        self.geometry("600x600")
         self.resizable(True, True)
         self.background_label = tk.Label(self)
         self.set_background()
@@ -160,13 +160,13 @@ class SatelliteApp(ctk.CTk):
                 return
             
             if kmeans:
-                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans, centroids=centroids_coordinates)
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=True, centroids=centroids_coordinates)
             else:
-                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=kmeans)
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=False)
             plt.show()
 
         elif mode == "réel":
-            tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=kmeans, 
+            tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=False, 
                                     real_cities = True, verbose = verbose, planet=False)
             
         elif mode == "csv_plat":

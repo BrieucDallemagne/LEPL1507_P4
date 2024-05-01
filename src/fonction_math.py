@@ -260,9 +260,9 @@ def compute_sph_normals(theta, phi) :
 
 def minimum_intensity(height, earth_radius, I) :
     thetamax=np.pi/2-np.arccos(earth_radius/(height+earth_radius))
-    thetacool=thetamax/1.5
-    b=2*np.sin(thetacool/2)*earth_radius
-    alpha=(np.pi-thetacool)/2
+    thetarfadetmalfique=thetamax
+    b=2*np.sin(thetarfadetmalfique/2)*earth_radius
+    alpha=(np.pi-thetarfadetmalfique)/2
     rangle=np.sqrt(height**2+b**2-2*height*b*np.cos(np.pi-alpha))
     Imin=I(rangle)
     return Imin,rangle

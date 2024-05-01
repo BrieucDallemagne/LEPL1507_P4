@@ -119,7 +119,14 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     grid_points = np.column_stack((x_grid, y_grid, z_grid))
     distances_matrix = cdist(cities_coordinates, grid_points)
 
-    inv_squared_distances_matrix = fm.I_sph(sph_cities_coords,cities_coordinates, x_grid, y_grid, z_grid)   
+    alpha_coefs = fm.coef_sphere(sph_cities_coords, cities_coordinates, x_grid, y_grid, z_grid)
+    
+
+    inv_squared_distances_matrix = fm.I(distances_matrix)
+    inv_squared_distances_matrix = inv_squared_distances_matrix*alpha_coefs
+
+
+   
 
     # Variables
     satellite_positions = cp.Variable(len(theta_values) * len(phi_values), boolean=True)
@@ -172,5 +179,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         print(solution_matrix)
         print("Coordonnées des satellites (theta, phi)")
         print(coords)
+        print ("I min", min_intensity)
+
 
     return coords

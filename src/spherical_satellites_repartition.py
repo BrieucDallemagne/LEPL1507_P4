@@ -101,6 +101,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     theta_values = np.linspace(0, 2 * np.pi, 20)[1:]
     phi_values = np.linspace(0, np.pi, 20)[1:-1]
 
+    # Forbidden positions
     forbidden_positions = []
     for i in range(len(theta_values)):
         for j in range(len(phi_values)):
@@ -120,13 +121,9 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
     distances_matrix = cdist(cities_coordinates, grid_points)
 
     alpha_coefs = fm.coef_sphere(sph_cities_coords, cities_coordinates, x_grid, y_grid, z_grid)
-    
 
     inv_squared_distances_matrix = fm.I(distances_matrix)
     inv_squared_distances_matrix = inv_squared_distances_matrix*alpha_coefs
-
-
-   
 
     # Variables
     satellite_positions = cp.Variable(len(theta_values) * len(phi_values), boolean=True)

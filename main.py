@@ -142,11 +142,11 @@ class SatelliteApp(ctk.CTk):
             if kmeans:
                 centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, num_villes // 2,
                                                                          cities_weights)
-                satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, centroids_coordinates,
+                satellites_coordinates = esr.euclidean_satellites_repartition(number_of_satellites, centroids_coordinates,
                                                                           centroids_weights, grid_size, scope, height,
                                                                           intensity=1000)
             else:
-                satellites_coordinates = esr.euclidean_satellites_répartition(number_of_satellites, cities_coordinates,
+                satellites_coordinates = esr.euclidean_satellites_repartition(number_of_satellites, cities_coordinates,
                                                                           poids, grid_size, scope, height,
                                                                           intensity=1000)
             pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates)
@@ -154,7 +154,7 @@ class SatelliteApp(ctk.CTk):
         elif mode == "Sphérique":
             cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
             cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
-            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
+            cities_coordinates = np.c_[cities_coordinates_longitude, cities_coordinates_latitude]
             cities_weights = np.full(num_villes, 1 / num_villes)
 
             if kmeans:

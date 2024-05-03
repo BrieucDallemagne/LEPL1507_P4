@@ -60,12 +60,14 @@ def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_we
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI, warm_start=True)
 
-    if problem.status != cp.OPTIMAL:
-        raise Exception("The problem is not solvable")
-    
-    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
-    coords = np.argwhere(solution_matrix == 1)
-    coords = coords / transformation_ratio + np.array([x_min, y_min])
-    coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
-
-    return coords_avec_rayon
+    #if problem.status != cp.OPTIMAL:
+    #    #raise Exception("The problem is not solvable")
+    #    return np.array([0, 0, 0])
+    #
+    if satellite_positions.value is not None:
+        solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
+        coords = np.argwhere(solution_matrix == 1)
+        coords = coords / transformation_ratio + np.array([x_min, y_min])
+        coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
+        print(coords_avec_rayon)
+        return coords_avec_rayon

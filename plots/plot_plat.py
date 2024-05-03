@@ -6,7 +6,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.fonction_math as fm
 from matplotlib.patches import Circle
-
+#force les fenêtre à s'ouvrir en grand (seulement pour Pierre)
+import matplotlib
+matplotlib.use('TkAgg')
 def mapping(cities_coordinates, max_grid_size):
     x_min = np.min(cities_coordinates[:, 0])
     x_max = np.max(cities_coordinates[:, 0])
@@ -20,6 +22,9 @@ def mapping(cities_coordinates, max_grid_size):
     return cities_coordinates * transformation_ratio
 
 def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates):
+    if satellites_coordinates is None:
+        print("No solution found")
+        return
     # Extraire les coordonnées x et y des points
     x_coords, y_coords = zip(*cities_coordinates)
 

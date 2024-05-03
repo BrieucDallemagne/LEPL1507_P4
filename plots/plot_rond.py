@@ -102,7 +102,7 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
 
     for i, (x_og, y_og, z_og) in enumerate(centroids):
         is_covered = is_covered_3D([x_og, y_og, z_og], satellites_cart_coordinates, scope)
-        color = 'pink' if is_covered else 'blue'
+        color = 'cyan' if is_covered else 'pink'
         plotter.add_mesh(pv.Sphere(radius=earth_radius/25, center=(x_og, y_og, z_og)), color=color, point_size=20)
 
     

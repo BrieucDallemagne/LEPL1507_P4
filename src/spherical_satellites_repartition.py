@@ -176,7 +176,8 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
         print(solution_matrix)
         print("Coordonnées des satellites (theta, phi)")
         print(coords)
-        print ("I min", min_intensity)
+        print("I minimum")
+        print(min_intensity)
 
 
     return coords

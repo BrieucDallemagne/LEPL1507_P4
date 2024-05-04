@@ -103,10 +103,10 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     # Forbidden positions
     forbidden_positions = []
-    for i in range(len(theta_values)):
+    """for i in range(len(theta_values)):
         for j in range(len(phi_values)):
             if (phi_values[j] >= 3*np.pi/4):
-                forbidden_positions.append(i*len(phi_values) + j)
+                forbidden_positions.append(i*len(phi_values) + j)"""
 
     # Create 2D arrays for theta and phi
     phi, theta = np.meshgrid(phi_values, theta_values)
@@ -138,7 +138,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     # Constraints
     constraints = []
-    min_intensity = 0.5*fm.minimum_intensity(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height)
+    min_intensity = 0.4*fm.minimum_intensity(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height)
 
     constraints.append((enough_intensity @ cities_weights) >= 0.8)
     for i in range(num_cities):

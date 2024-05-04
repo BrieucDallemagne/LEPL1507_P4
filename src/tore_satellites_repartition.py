@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import fonction_math as fm
+import src.fonction_math as fm
 import numpy as np
 import cvxpy as cp
 import math
@@ -87,11 +87,11 @@ def spherical_satellites_repartition_old(cities_coordinates, cities_weights, hei
 
     return coords
 
-def spherical_satellites_repartition(sph_cities_coords, cities_weights, height=4, verbose=False):
+def tore_satellites_repartition(sph_cities_coords, cities_weights, height=4, verbose=False):
     
     cities_coordinates = copy.copy(sph_cities_coords)
     num_cities = cities_coordinates.shape[0]
-
+    
     cities_coordinates[:, 0] += np.pi
 
     earth_radius = 50

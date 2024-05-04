@@ -6,10 +6,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import src.spherical_satellites_repartition as ssr
 import src.euclidean_satellites_repartition as esr
-import pandas as pd
 import tests.test_rond as tr
 import pandas as pd
 import src.resolve_csv as rc
+import src.tore_satellites_repartition as tt
+import plots.plot_tore as pt
 
 import plots.plot_plat as pp
 import plots.plot_rond as pr
@@ -55,7 +56,7 @@ class SatelliteApp(ctk.CTk):
         self.mode_label = ctk.CTkLabel(self, text="Mode")
         self.mode_label.grid(row=1, column=0, padx=20, pady=20, sticky="ew")
         # Création du menu déroulant avec les options
-        self.mode_menu = ctk.CTkOptionMenu(master=self, values=["Plat", "Sphérique","réel","csv_plat","csv_rond"], variable=self.mode_var)
+        self.mode_menu = ctk.CTkOptionMenu(master=self, values=["Plat", "Sphérique","réel","csv_plat","csv_rond","tore"], variable=self.mode_var)
         self.mode_menu.grid(row=1, column=1, padx=20, pady=20, columnspan=2, sticky="ew")
 
         # Number of cities
@@ -186,6 +187,15 @@ class SatelliteApp(ctk.CTk):
         elif mode == "csv_rond":
             rc.resolve_rond(num_villes, csvname, kmeans=kmeans,verbose=verbose)
 
+        elif mode == "tore":
+            cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
+            cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
+            cities_coordinates = np.c_[cities_coordinates_longitude, cities_coordinates_latitude]
+            cities_weights = np.full(num_villes, 1 / num_villes)
+            cities_coordinates = cities_coordinates.astype(float)
+            satellites_coordinates = tt.tore_satellites_repartition(cities_coordinates, cities_weights, verbose=verbose)
+
+            pt.plot_torus(cities_coordinates, satellites_coordinates, cities_weights, height)
             
 
 if __name__ == "__main__":

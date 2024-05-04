@@ -181,10 +181,10 @@ class SatelliteApp(ctk.CTk):
                 tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=False, real_cities = True, verbose = verbose, planet=False)
             
         elif mode == "csv_plat":
-            rc.resolve_carre(num_villes, csvname)
+            rc.resolve_carre(num_villes, csvname, kmeans=kmeans,verbose=verbose)
 
         elif mode == "csv_rond":
-            rc.resolve_rond(num_villes, csvname)
+            rc.resolve_rond(num_villes, csvname, kmeans=kmeans,verbose=verbose)
 
             
 

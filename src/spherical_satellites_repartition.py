@@ -87,8 +87,8 @@ def spherical_satellites_repartition_old(cities_coordinates, cities_weights, hei
     return coords
 
 def spherical_satellites_repartition(cities_coordinates, cities_weights, height=4, verbose=False):
-    sph_cities_coords=np.copy(cities_coordinates)
-    cities_coordinates = copy.copy(cities_coordinates)
+    sph_cities_coords = np.copy(cities_coordinates)
+    cities_coordinates = np.copy(cities_coordinates)
     num_cities = cities_coordinates.shape[0]
 
     earth_radius = 50

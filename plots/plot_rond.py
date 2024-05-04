@@ -33,7 +33,7 @@ def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope,co
             total_intensity += fm.I(city_satellite_distance, coef=coef)
     return total_intensity >= min_intensity[0]
 
-def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans=False, centroids=[[0, 0, 0]], planet= "earth"):
+def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans=False, centroids=None, planet= "earth"):
     sphere_center = (0, 0, 0)
     earth_radius = 50
     cities_coordinates_spherical = np.copy(cities_coordinates)
@@ -100,10 +100,11 @@ def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, 
 
         plotter.add_mesh(pv.Sphere(radius=earth_radius/50, center=(x_city, y_city, z_city)), color=color, point_size=20)
 
-    for i, (x_og, y_og, z_og) in enumerate(centroids):
-        is_covered = is_covered_3D([x_og, y_og, z_og], satellites_cart_coordinates, scope)
-        color = 'cyan' if is_covered else 'pink'
-        plotter.add_mesh(pv.Sphere(radius=earth_radius/25, center=(x_og, y_og, z_og)), color=color, point_size=20)
+    if centroids is not None:
+        for i, (x_og, y_og, z_og) in enumerate(centroids):
+            is_covered = is_covered_3D([x_og, y_og, z_og], satellites_cart_coordinates, scope)
+            color = 'cyan' if is_covered else 'pink'
+            plotter.add_mesh(pv.Sphere(radius=earth_radius/25, center=(x_og, y_og, z_og)), color=color, point_size=20)
 
     
     # Position de la caméra

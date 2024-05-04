@@ -112,7 +112,7 @@ class SatelliteApp(ctk.CTk):
         self.mode_var.set("réel")
         if self.number_cities_entry.get() == '':
             self.number_cities_entry.insert(0, "18")
-        self.verbose_checkbox_var.set(False)
+        self.verbose_checkbox_var.get()
         self.generate_results_button.invoke()
 
     def choisir_mode(self):
@@ -130,27 +130,28 @@ class SatelliteApp(ctk.CTk):
             return
 
         if mode == "Plat":
-            grid_size = np.random.randint(10, 100)
+            grid_size = np.random.randint(10, 200)
             poids = fm.create_weight(num_villes)
             height = np.random.randint(1, 10)
-            cities_weights = np.full(num_villes, 1 / num_villes)
-            scope = np.random.randint(height, 20)
+            #cities_weights = np.full(num_villes, 1 / num_villes)
+            scope = np.random.randint(height, 100)
             radius = np.sqrt(scope ** 2 - height ** 2)
             cities_coordinates = np.random.randint(0, grid_size, size=(num_villes, 2))
             nbr_max_sat = fm.nbr_max_sat(cities_coordinates, grid_size, radius)
             number_of_satellites = nbr_max_sat
+
             if kmeans:
                 centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, num_villes // 2,
-                                                                         cities_weights)
+                                                                         poids)
                 satellites_coordinates = esr.euclidean_satellites_repartition(number_of_satellites, centroids_coordinates,
-                                                                          centroids_weights, grid_size, scope, height,
-                                                                          intensity=1000)
+                                                                          centroids_weights, grid_size, scope, height, verbose=verbose)
+                pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates, centroids = centroids_coordinates)
             else:
                 satellites_coordinates = esr.euclidean_satellites_repartition(number_of_satellites, cities_coordinates,
-                                                                          poids, grid_size, scope, height,
-                                                                          intensity=1000)
-            pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates)
+                                                                          poids, grid_size, scope, height, verbose=verbose)
+                pp.plot_covering_2D(cities_coordinates, poids, satellites_coordinates)
             plt.show()
+            
         elif mode == "Sphérique":
             cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
             cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
@@ -174,8 +175,10 @@ class SatelliteApp(ctk.CTk):
             plt.show()
 
         elif mode == "réel":
-            tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=False, 
-                                    real_cities = True, verbose = verbose, planet=False)
+            if kmeans:
+                tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=True, real_cities = True, verbose = verbose, planet=False)
+            else:
+                tr.test_solve_3D_random(n_cities=num_villes,n_tests=1, k_means=False, real_cities = True, verbose = verbose, planet=False)
             
         elif mode == "csv_plat":
             rc.resolve_carre(num_villes, csvname)

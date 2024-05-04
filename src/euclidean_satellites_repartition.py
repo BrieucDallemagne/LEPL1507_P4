@@ -10,7 +10,9 @@ from matplotlib.patches import Circle
 import cvxpy as cp
 import random
 
-def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_weights, grid_size = 500, scope = 15, height = 4):
+def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_weights, grid_size = 500, scope = 15, height = 4, verbose = False):
+
+    cities_coordinates = np.copy(cities_coordinates)
 
     x_min = np.min(cities_coordinates[:, 0])
     x_max = np.max(cities_coordinates[:, 0])
@@ -43,7 +45,7 @@ def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_we
     #objective = cp.Maximize(cp.sum(how_many_times_covered))
 
     indices_within_scope = [
-        np.where(distances_matrix[i] <= scope)[0] for i in range(num_cities)
+        np.where(distances_matrix[i] <= scope*transformation_ratio)[0] for i in range(num_cities)
     ]
 
     # Constraints
@@ -60,14 +62,25 @@ def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_we
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.GLPK_MI, warm_start=True)
 
-    #if problem.status != cp.OPTIMAL:
-    #    #raise Exception("The problem is not solvable")
-    #    return np.array([0, 0, 0])
-    #
-    if satellite_positions.value is not None:
-        solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
-        coords = np.argwhere(solution_matrix == 1)
-        coords = coords / transformation_ratio + np.array([x_min, y_min])
-        coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
-        print(coords_avec_rayon)
-        return coords_avec_rayon
+    if problem.status != cp.OPTIMAL:
+        raise Exception("The problem is not solvable")
+    
+    solution_matrix = satellite_positions.value.astype(int).reshape(grid_size+1,grid_size+1)
+    coords = np.argwhere(solution_matrix == 1)
+    coords = coords / transformation_ratio + np.array([x_min, y_min])
+    coords_avec_rayon = np.c_[coords, np.full((len(coords), 1), radius)]
+
+    if verbose:
+        print("Number of satellites: ", N_satellites)
+        print("Number of cities: ", num_cities)
+        print("Number of cities covered: ", np.sum(city_covered.value))
+        print("Number of satellites used: ", np.sum(satellite_positions.value))
+        print("Objective value: ", objective.value)
+        print("City covered: ", city_covered.value)
+        print("How many times covered: ", how_many_times_covered.value)
+        print("Satellite positions: ", satellite_positions.value)
+        print("Solution matrix: ", solution_matrix)
+        print("Coords: ", coords)
+        print("Coords avec rayon: ", coords_avec_rayon)
+
+    return coords_avec_rayon

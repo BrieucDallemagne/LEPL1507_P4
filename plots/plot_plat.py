@@ -21,10 +21,7 @@ def mapping(cities_coordinates, max_grid_size):
     transformation_ratio = max_grid_size / max_length
     return cities_coordinates * transformation_ratio
 
-def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates):
-    if satellites_coordinates is None:
-        print("No solution found")
-        return
+def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates, centroids=None):
     # Extraire les coordonnées x et y des points
     x_coords, y_coords = zip(*cities_coordinates)
 
@@ -49,8 +46,11 @@ def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates)
     plt.text(0.85, -0.1, f'Population Proportion: {np.round(population_proportion, decimals=4)}',
              transform=plt.gca().transAxes, ha='center', va='center', fontsize=10)
     # mettre le première arg à 0.1 pour afficher en bas à gauche
-        
 
+    # Centroides
+    if centroids is not None:
+        for i,(x_og,y_og) in enumerate(centroids):
+            plt.scatter(x_og, y_og, color='yellow', marker='o', linewidths=5)
 
     plt.scatter(satellites_coordinates[:, 0], satellites_coordinates[:, 1], color='blue', marker='x')
 
@@ -63,10 +63,3 @@ def plot_covering_2D(cities_coordinates, cities_weights, satellites_coordinates)
 
 
     plt.show()
-
-
-
-
-
-
-

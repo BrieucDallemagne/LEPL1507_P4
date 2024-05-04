@@ -42,45 +42,36 @@ def test_solve_3D_random(n_cities=100,n_tests=5, k_means=False, real_cities = Fa
             cities_coordinates_sph = np.array([longitudes, latitudes]).T
             cities_coordinates_sph[:, 1] = (90 - cities_coordinates_sph[:, 1]) 
             cities_coordinates = np.radians(cities_coordinates_sph)
-            #print("Villes affichées :")
-            #for i in range(n_cities):
-                #print("{}, {}".format(cities_names[i], countries_names[i]))
-
-
             cities_weights = np.full(cities_coordinates_sph.shape[0], 1/cities_coordinates_sph.shape[0])
+
+            if k_means:
+                centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, cities_coordinates_sph.shape[0]//2, cities_weights, spherical=True)
+                satellites_coordinates = ssr.spherical_satellites_repartition(fm.cartesian_to_spherical(centroids_coordinates), centroids_weights, 10, verbose=verbose)
+            else:
+                satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
+            
+            if k_means:
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=True, centroids=centroids_coordinates)
+            else:
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=False)
+            plt.show()
+
         else:
             n_cities = np.random.randint(5, 100)
-            #cities_weights = fm.create_weight(n_cities)
             cities_weights = np.full(n_cities, 1/n_cities)
-            radius_earth = 50
 
             cities_coordinates_latitude = np.radians(np.random.randint(-90, 90, size=(n_cities)))
             cities_coordinates_longitude = np.radians(np.random.randint(-180, 180, size=(n_cities)))
-            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-        og_cit = np.array(0)
-        og_weights = np.array(0)
-        if k_means:
-            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-            cities_x = [radius_earth * np.cos(np.radians(coord[1])) * np.cos(np.radians(coord[0])) for coord in
-                        cities_coordinates]
-            cities_y = [radius_earth * np.cos(np.radians(coord[1])) * np.sin(np.radians(coord[0])) for coord in
-                        cities_coordinates]
-            cities_z = [radius_earth * np.sin(np.radians(coord[1])) for coord in cities_coordinates]
-            og_cit = np.c_[cities_x, cities_y, cities_z]
-            og_weights = cities_weights
-            cities_long_and_lat = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-            cities_wrap = fm.k_means_cities(cities_long_and_lat, n_cities//2, cities_weights)
-            cities_long_and_lat = cities_wrap[0]
-            cities_weights = cities_wrap[1]
-            cities_coordinates_latitude = cities_long_and_lat[:, 0]
-            cities_coordinates_longitude = cities_long_and_lat[:, 1]
-            cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-        satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
-        if np.array_equal(satellites_coordinates, np.array([])):
-            continue
-        if k_means:
-            pr.plot_3D(og_cit, satellites_coordinates, og_weights, 10, k_means,  centroids = cities_coordinates,  planet = "earth")
-        else:
-            pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10,  planet="earth")
-        plt.show()
+            cities_coordinates = np.c_[cities_coordinates_longitude, cities_coordinates_latitude]
 
+            if k_means:
+                centroids_coordinates, centroids_weights = fm.k_means_cities(cities_coordinates, cities_coordinates_sph.shape[0]//2, cities_weights, spherical=True)
+                satellites_coordinates = ssr.spherical_satellites_repartition(fm.cartesian_to_spherical(centroids_coordinates), centroids_weights, 10, verbose=verbose)
+            else:
+                satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
+            
+            if k_means:
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=True, centroids=centroids_coordinates)
+            else:
+                pr.plot_3D(cities_coordinates, satellites_coordinates, cities_weights, 10, kmeans=False)
+            plt.show()

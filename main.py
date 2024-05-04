@@ -9,8 +9,8 @@ import src.euclidean_satellites_repartition as esr
 import tests.test_rond as tr
 import pandas as pd
 import src.resolve_csv as rc
-import src.tore_satellites_repartition as tt
 import plots.plot_tore as pt
+import tests.test_tore as tt
 
 import plots.plot_plat as pp
 import plots.plot_rond as pr
@@ -188,14 +188,7 @@ class SatelliteApp(ctk.CTk):
             rc.resolve_rond(num_villes, csvname, kmeans=kmeans,verbose=verbose)
 
         elif mode == "tore":
-            cities_coordinates_latitude = np.random.randint(-90, 90, size=(num_villes))
-            cities_coordinates_longitude = np.random.randint(-180, 180, size=(num_villes))
-            cities_coordinates = np.c_[cities_coordinates_longitude, cities_coordinates_latitude]
-            cities_weights = np.full(num_villes, 1 / num_villes)
-            cities_coordinates = cities_coordinates.astype(float)
-            satellites_coordinates = tt.tore_satellites_repartition(cities_coordinates, cities_weights, verbose=verbose)
-
-            pt.plot_torus(cities_coordinates, satellites_coordinates, cities_weights, height)
+            tt.test_solve_3D_random(num_villes,1, k_means=kmeans, verbose=verbose)
             
 
 if __name__ == "__main__":

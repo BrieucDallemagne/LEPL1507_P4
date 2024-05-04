@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-import tore_satellites_repartition as ssr
+import src.tore_satellites_repartition as ssr
 import numpy as np
 import matplotlib.pyplot as plt
 import random
@@ -15,10 +15,9 @@ import csv
 
 matplotlib.use('TkAgg')
 
-def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose = False, planet=False):
+def test_solve_3D_random(n_cities,n_tests=5, k_means=False, real_cities = False, verbose = False, planet=False):
     for i in range(n_tests):
         if real_cities:
-            n_cities = np.random.randint(10, 40)
             file = open('worldcities.csv', 'r', encoding='utf-8')
             csv_reader = csv.DictReader(file)
 
@@ -50,7 +49,6 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
 
             cities_weights = np.full(cities_coordinates_sph.shape[0], 1/cities_coordinates_sph.shape[0])
         else:
-            n_cities = np.random.randint(10, 40)
             #cities_weights = fm.create_weight(n_cities)
             cities_weights = np.full(n_cities, 1/n_cities)
             radius_earth = 50
@@ -77,7 +75,7 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
             cities_coordinates_latitude = cities_long_and_lat[:, 0]
             cities_coordinates_longitude = cities_long_and_lat[:, 1]
             cities_coordinates = np.c_[cities_coordinates_latitude, cities_coordinates_longitude]
-        satellites_coordinates = ssr.spherical_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
+        satellites_coordinates = ssr.tore_satellites_repartition(cities_coordinates, cities_weights, 10, verbose=verbose)
         if np.array_equal(satellites_coordinates, np.array([])):
             continue
         if k_means:
@@ -90,5 +88,5 @@ def test_solve_3D_random(n_tests=5, k_means=False, real_cities = False, verbose 
         plt.show()
 
 
-test_solve_3D_random(n_tests=1, k_means=False, real_cities=True, verbose=False)
+
 

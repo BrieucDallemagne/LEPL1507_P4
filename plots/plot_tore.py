@@ -104,8 +104,8 @@ def plot_torus(cities_coordinates, satellites_coordinates, cities_weights, heigh
 
     intensity_matrix = fm.I_tore(cities_coordinates_spherical, cities_coordinates, x_sat, y_sat, z_sat)
     for x_s, y_s, z_s in zip(x_sat, y_sat, z_sat):
-        sphere = pv.Sphere(radius=scope/50, center=(x_s, y_s, z_s))
-        plotter.add_mesh(sphere, color='firebrick', point_size=10, opacity=0.3)
+        sphere = pv.Sphere(radius=scope/100, center=(x_s, y_s, z_s))
+        plotter.add_mesh(sphere, color='firebrick', point_size=10, opacity=1)
     satellites_cart_coordinates = np.c_[x_sat, y_sat, z_sat]
     satisfied_proportion = 0
     alpha_coefs = fm.coef_tore(cities_coordinates_spherical, cities_coordinates, x_sat, y_sat, z_sat)

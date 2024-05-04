@@ -138,7 +138,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     # Constraints
     constraints = []
-    min_intensity = fm.minimum_intensity(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height)
+    min_intensity = 0.5*fm.minimum_intensity(height,earth_radius,fm.I)[0] #fm.minimum_intensity(height)
 
     constraints.append((enough_intensity @ cities_weights) >= 0.8)
     for i in range(num_cities):
@@ -151,7 +151,7 @@ def spherical_satellites_repartition(cities_coordinates, cities_weights, height=
 
     # Solve
     problem = cp.Problem(objective, constraints)
-    problem.solve(solver=cp.GLPK_MI, warm_start=True, verbose=False)
+    problem.solve(solver=cp.GLPK_MI, warm_start=True, verbose=verbose)
     solution_matrix = satellite_positions.value.astype(int).reshape(len(theta_values), len(phi_values))
 
     where = np.argwhere(solution_matrix == 1)

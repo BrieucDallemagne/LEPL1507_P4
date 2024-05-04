@@ -31,7 +31,7 @@ def has_enough_intensity(city_coords, satellites_coords, min_intensity, scope,co
             (city_coords[0] - satellite_coords_curr[0]) ** 2 + (city_coords[1] - satellite_coords_curr[1]) ** 2 + (city_coords[2] - satellite_coords_curr[2]) ** 2)
         if city_satellite_distance <= scope:
             total_intensity += fm.I(city_satellite_distance, coef=coef)
-    return total_intensity >= min_intensity[0]
+    return total_intensity >= 0.5*min_intensity[0]
 
 def plot_3D(cities_coordinates, satellites_coordinates, cities_weights, height, kmeans=False, centroids=None, planet= "earth"):
     sphere_center = (0, 0, 0)

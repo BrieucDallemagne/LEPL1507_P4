@@ -60,7 +60,7 @@ def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_we
 
     # Solve
     problem = cp.Problem(objective, constraints)
-    problem.solve(solver=cp.GLPK_MI, warm_start=True)
+    problem.solve(solver=cp.GLPK_MI, warm_start=True, verbose=verbose)
 
     if problem.status != cp.OPTIMAL:
         raise Exception("The problem is not solvable")
@@ -82,5 +82,6 @@ def euclidean_satellites_repartition(N_satellites, cities_coordinates, cities_we
         print("Solution matrix: ", solution_matrix)
         print("Coords: ", coords)
         print("Coords avec rayon: ", coords_avec_rayon)
+        print("Propotion of population covered: ", np.sum(city_covered.value @ cities_weights))
 
     return coords_avec_rayon
